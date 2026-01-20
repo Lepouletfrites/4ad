@@ -1,40 +1,89 @@
-/* style.css - Version Mobile First */
+/* style.css - Version Mobile Optimisée et Nettoyée */
+
+/* RÈGLE D'OR : Empêche les bordures d'agrandir les éléments (Règle le problème de scroll horizontal) */
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Courier New', Courier, monospace;
     background-color: #121212;
     color: #e0e0e0;
     margin: 0;
-    padding: 20px 10px; /* Moins de padding sur les côtés pour mobile */
+    padding: 15px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    -webkit-tap-highlight-color: transparent; /* Enlève le flash bleu au clic */
+    -webkit-tap-highlight-color: transparent; /* Enlève le flash bleu au clic sur mobile */
+    overflow-x: hidden; /* Sécurité supplémentaire */
+}
+
+/* --- EN-TÊTE --- */
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
 }
 
 h1 {
     color: #ff5555;
     text-shadow: 2px 2px #000;
-    margin: 10px 0 30px 0;
-    font-size: 1.8rem;
-    text-align: center;
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
-    width: 100%;
+    margin: 0;
+    font-size: 1.4rem; /* Un peu plus petit pour tenir sur mobile */
 }
 
+#settings-btn {
+    background: none;
+    border: 1px solid #555;
+    color: #888;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* --- CONTENEUR PRINCIPAL --- */
 .container {
     width: 100%;
     max-width: 600px;
-    padding-bottom: 50px; /* Espace pour scroller */
+    padding-bottom: 50px;
+}
+
+/* --- GROS BOUTON TUILE (VIOLET) --- */
+#new-tile-btn {
+    background-color: #8e44ad;
+    color: white;
+    width: 100%;
+    padding: 15px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid #6c3483;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 0 #512e62;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.1s;
+}
+
+#new-tile-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #512e62;
 }
 
 /* --- GRILLE DE BOUTONS --- */
 .grid-menu {
     display: grid;
-    /* 2 colonnes sur mobile, plus sur grand écran */
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-    gap: 15px;
+    /* Adapte auto : minimum 130px de large par bouton */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+    gap: 12px;
 }
 
 .table-btn {
@@ -42,69 +91,60 @@ h1 {
     color: #ffcc00;
     font-family: inherit;
     font-weight: bold;
-    font-size: 0.95rem;
-    padding: 20px 10px;
+    font-size: 0.9rem;
+    padding: 15px 5px;
     border: 1px solid #444;
-    border-radius: 12px; /* Bords plus ronds */
+    border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 4px 0 #111;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 80px; /* Hauteur min pour le pouce */
-    transition: transform 0.1s;
+    min-height: 70px;
 }
 
 .table-btn:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 #111;
+    transform: translateY(3px);
+    box-shadow: none;
     background-color: #333;
 }
 
-/* --- LE MODAL (POPUP) --- */
+/* --- LE MODAL (FENÊTRE) --- */
 .modal {
-    display: none; /* Caché par défaut */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.85); /* Fond sombre */
-    backdrop-filter: blur(5px); /* Effet de flou moderne */
+    overflow-y: auto; /* Permet de scroller verticalement si le contenu est long */
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
     animation: fadeIn 0.3s;
 }
 
 .modal-content {
     background-color: #1e1e1e;
-    margin: 15% auto; /* 15% du haut */
-    padding: 20px;
+    margin: 5vh auto; /* Marge haut/bas plus petite sur mobile */
+    padding: 15px;
     border: 1px solid #ff5555;
-    border-radius: 15px;
-    width: 85%; /* Largeur mobile */
+    border-radius: 12px;
+    width: 90%; /* Prend 90% de la largeur de l'écran */
     max-width: 500px;
     box-shadow: 0 0 20px rgba(255, 85, 85, 0.3);
     position: relative;
     animation: slideUp 0.3s;
 }
 
-/* Bouton fermer (X) */
 .close-btn {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-    position: absolute;
-    right: 15px;
-    top: 5px;
-    padding: 10px; /* Zone de clic plus grande */
     cursor: pointer;
-}
-
-.close-btn:hover {
-    color: #fff;
+    line-height: 20px;
 }
 
 #modal-title {
@@ -112,19 +152,45 @@ h1 {
     margin-top: 0;
     border-bottom: 1px solid #444;
     padding-bottom: 10px;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+    margin-right: 30px; /* Pour ne pas chevaucher la croix */
+}
+
+/* --- IMAGE DANS LE MODAL (CORRECTIF RESPONSIVE) --- */
+#modal-image {
+    display: block;
+    width: 100%;          /* Prend toute la largeur du conteneur parent */
+    max-width: 100%;      /* Ne dépasse JAMAIS */
+    height: 250px;        /* Hauteur fixe pour éviter que l'interface saute */
+    object-fit: contain;  /* L'image se réduit pour tenir dedans sans couper */
+    background-color: #000;
+    border: 2px solid #ff5555;
+    border-radius: 6px;
+    margin: 0 auto 15px auto; /* Centré */
+}
+
+/* Badge Source */
+.source-badge {
+    font-size: 0.75rem;
+    color: #aaa;
+    background-color: #333;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-style: italic;
 }
 
 .dice-roll {
     color: #888;
     font-style: italic;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-size: 0.9rem;
 }
 
 .result-text {
-    font-size: 1.2rem;
-    line-height: 1.5;
+    font-size: 1.1rem;
+    line-height: 1.4;
     margin-bottom: 20px;
 }
 
@@ -132,148 +198,91 @@ h1 {
     color: #ff5555;
     font-weight: bold;
     display: block;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
 }
 
-/* --- BOUTONS INTERACTION (DANS LE MODAL) --- */
+/* --- ZONE D'INTERACTION (BOUTONS BAS) --- */
 #interaction-area {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column; /* Sur mobile, boutons les uns sous les autres c'est mieux */
     gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
+    margin-top: 15px;
     padding-top: 15px;
     border-top: 1px dashed #444;
 }
 
-.reaction-btn, .treasure-btn {
-    flex: 1; /* Prend la place dispo */
-    min-width: 120px;
+/* Boutons communs */
+.reaction-btn, .treasure-btn, .combat-btn, .next-action-btn {
+    width: 100%;
     padding: 12px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
+    text-align: center;
 }
 
 .reaction-btn { background-color: #3b71ca; color: white; }
 .treasure-btn { background-color: #d4ac0d; color: black; }
+.combat-btn { background-color: #e74c3c; color: white; }
+.next-action-btn { background-color: #2ecc71; color: white; }
 
-.dynamic-result-text {
+/* Feedback visuel au clic */
+.reaction-btn:active, .treasure-btn:active, .combat-btn:active, .next-action-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* Résultats dynamiques (textes sous boutons) */
+.dynamic-result-text, .combat-result {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 10px;
     background: #000;
     border-radius: 5px;
     text-align: center;
+    border: 1px solid #555;
 }
 
-/* Animations */
-@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-@keyframes slideUp { from {transform: translateY(50px);} to {transform: translateY(0);} }
+.combat-result {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    font-weight: bold;
+    background-color: #2c0b0b;
+}
 
-/* Ajout pour le bouton "Action Suivante" */
-.next-action-btn {
-    background-color: #2ecc71; /* Vert */
+/* --- STYLE MENU RÉGLAGES --- */
+.extension-item {
+    background-color: #2c2c2c;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.extension-item input {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    accent-color: #ff5555;
+}
+
+.save-btn {
+    background-color: #2ecc71;
     color: white;
-    padding: 12px 20px;
+    width: 100%;
+    padding: 15px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     font-size: 1.1rem;
+    margin-top: 15px;
     cursor: pointer;
-    margin: 5px;
-    width: 100%; /* Prend toute la largeur sur mobile */
-    box-shadow: 0 4px 0 #27ae60;
-    transition: transform 0.1s;
 }
 
-.next-action-btn:active {
-    transform: translateY(4px);
-    box-shadow: none;
-}
-
-.next-action-btn:hover {
-    background-color: #27ae60;
-}
-
-/* --- Ajout bouton Combat --- */
-.combat-btn {
-    background-color: #e74c3c; /* Rouge vif */
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    flex: 1; /* Prend de la place comme les autres */
-    min-width: 120px;
-}
-
-.combat-btn:hover {
-    background-color: #c0392b;
-}
-
-/* Style pour l'affichage du résultat de combat */
-.combat-result {
-    color: #e74c3c;
-    font-weight: bold;
-    border: 1px solid #e74c3c;
-    background-color: #2c0b0b;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    animation: fadeIn 0.2s;
-}
-/* Ajoutez ceci à la fin de votre fichier style.css */
-
-/* --- NOUVEAU : Style du Gros Bouton Tuile --- */
-#new-tile-btn {
-    background-color: #8e44ad; /* Violet */
-    color: white;
-    width: 100%;
-    padding: 20px;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: 1.2rem;
-    border: 2px solid #6c3483;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-bottom: 25px; /* Espace avant la grille */
-    box-shadow: 0 6px 0 #512e62;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: transform 0.1s;
-}
-
-#new-tile-btn:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 #512e62;
-}
-
-/* Style de l'image dans le modal */
-#/* Style de l'image dans le modal */
-/* style.css */
-
-#modal-image {
-    width: 100%;
-    height: 300px;
-    object-fit: contain;  /* L'image reste entière */
-    object-position: center; /* Force le centrage de l'image dans le cadre noir */
-    background-color: #000;
-    
-    max-width: 500px;
-    border-radius: 8px;
-    border: 2px solid #ff5555;
-    
-    /* C'est ces 3 lignes qui centrent le bloc image : */
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 15px; 
-}
-
-
+/* --- ANIMATIONS --- */
+@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+@keyframes slideUp { from {transform: translateY(30px);} to {transform: translateY(0);} }

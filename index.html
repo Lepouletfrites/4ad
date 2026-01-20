@@ -8,7 +8,10 @@
 </head>
 <body>
 
-    <h1>4 Contre les Ténèbres</h1>
+    <div class="header-bar">
+        <h1>4 Contre les Ténèbres</h1>
+        <button id="settings-btn" onclick="openSettings()">⚙️ Réglages</button>
+    </div>
 
     <div class="container">
         <button id="new-tile-btn" onclick="drawNewTile()">🏰 TIRER UNE NOUVELLE PIÈCE (Visuel)</button>
@@ -18,15 +21,25 @@
 
     <div id="result-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" onclick="closeModal('result-modal')">&times;</span>
             <h2 id="modal-title">Titre</h2>
             <div id="modal-body">
                 <img id="modal-image" src="" alt="Tuile Donjon" style="display:none;">
-                
-                <div id="dice-display" class="dice-roll"></div>
+                <div id="source-badge" class="source-badge"></div> <div id="dice-display" class="dice-roll"></div>
                 <div id="text-display" class="result-text"></div>
                 <div id="interaction-area"></div> 
             </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('settings-modal')">&times;</span>
+            <h2>Extensions & Sources</h2>
+            <p>Cochez les livres que vous voulez utiliser :</p>
+            <div id="extensions-list">
+                </div>
+            <button class="save-btn" onclick="closeModal('settings-modal')">✅ Valider et Fermer</button>
         </div>
     </div>
 
