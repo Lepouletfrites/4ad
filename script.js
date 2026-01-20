@@ -3,14 +3,41 @@
 let currentMonster = null;
 let activeExtensions = []; 
 
+/* DANS script.js - REMPLACER LE BLOC DOMContentLoaded PAR CECI */
+
 document.addEventListener('DOMContentLoaded', () => {
-    loadSettings(); // Charger les préférences
+    loadSettings(); 
 
     const container = document.getElementById("buttons-container");
-    const modal = document.getElementById("result-modal");
     
-    // Génération des boutons du menu principal
+    // --- 1. CRÉATION DE LA BARRE D'OUTILS (DÉS RAPIDES) ---
+    const toolBar = document.createElement("div");
+    toolBar.className = "dice-toolbar"; // On utilisera ce nom pour le style CSS
+    
+    // Bouton D6 (Classique)
+    const btnD6 = document.createElement("button");
+    btnD6.innerHTML = "🎲 <b>D6</b>";
+    btnD6.className = "quick-dice-btn d6-btn";
+    btnD6.onclick = () => showQuickDice(6);
+    
+    // Bouton D8 (Abysses / Armes lourdes)
+    const btnD8 = document.createElement("button");
+    btnD8.innerHTML = "🎲 <b>D8</b>";
+    btnD8.className = "quick-dice-btn d8-btn";
+    btnD8.onclick = () => showQuickDice(8);
+
+    // Ajout des boutons dans la barre
+    toolBar.appendChild(btnD6);
+    toolBar.appendChild(btnD8);
+    
+    // On ajoute la barre TOUT EN HAUT du conteneur
+    container.appendChild(toolBar);
+    // -----------------------------------------------------
+
+    // --- 2. GÉNÉRATION DES TABLES (Code habituel) ---
     for (const key in gameData) {
+        if (gameData[key].hidden) continue; 
+
         const btn = document.createElement("button");
         btn.textContent = gameData[key].label;
         btn.className = "table-btn";
@@ -23,13 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(btn);
     }
 
-    // Fermeture des modaux au clic extérieur
+    // Fermeture des modaux
     window.onclick = (event) => {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = "none";
         }
     }
 });
+
 
 // --- OUTILS MATHÉMATIQUES ---
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -157,7 +185,7 @@ function pickRandomItem(key, forcedIndex = null) {
     // --- ANALYSE DU TYPE D'OBJET ---
 
     if (item.type === "monster") {
-        // MONSTRE
+        // MONSTRE 
         currentMonster = item;
         let count = parseAndCalculate(item.qty);
         textDisplay.innerHTML = `<span class="monster-count">${count} ${item.name}</span> ${item.desc}`;
@@ -166,6 +194,7 @@ function pickRandomItem(key, forcedIndex = null) {
     } else if (item.type === "treasure") {
         // TRÉSOR (Calcul automatique de la valeur)
         displayTreasureResult(item, textDisplay);
+        addInteractionButtons(item, interactionArea); 
         
     } else {
         // TEXTE SIMPLE
@@ -185,8 +214,10 @@ function pickRandomItem(key, forcedIndex = null) {
 }
 
 // --- BOUTONS D'INTERACTION ---
+/* REMPLACEZ la fonction addInteractionButtons par celle-ci : */
+
 function addInteractionButtons(item, container) {
-    // Bouton COMBAT
+    // 1. Bouton COMBAT
     if (item.type === "monster") {
         const combatBtn = document.createElement("button");
         combatBtn.className = "combat-btn";
@@ -195,7 +226,7 @@ function addInteractionButtons(item, container) {
         container.appendChild(combatBtn);
     }
 
-    // Bouton RÉACTION
+    // 2. Bouton RÉACTION
     if (item.reaction) {
         const reactBtn = document.createElement("button");
         reactBtn.className = "reaction-btn";
@@ -204,7 +235,18 @@ function addInteractionButtons(item, container) {
         container.appendChild(reactBtn);
     }
 
-    // Bouton TEST (ex: Résoudre énigme)
+    // --- 3. NOUVEAU : Bouton ACTION SPÉCIALE (Pour le Seigneur du Chaos) ---
+    if (item.specialAction) {
+        const spBtn = document.createElement("button");
+        spBtn.className = "combat-btn"; // On garde le style bouton
+        spBtn.style.backgroundColor = "#8e44ad"; // Violet pour le Chaos/Magie
+        spBtn.innerHTML = item.specialAction.label;
+        spBtn.onclick = () => showSpecialResult(item.specialAction.table);
+        container.appendChild(spBtn);
+    }
+    // ---------------------------------------------------------------------
+    
+    // 4. Bouton TEST (ex: Résoudre énigme)
     if (item.testBtn) {
         const testBtn = document.createElement("button");
         testBtn.className = "combat-btn"; 
@@ -214,7 +256,7 @@ function addInteractionButtons(item, container) {
         container.appendChild(testBtn);
     }
 
-    // Bouton TRÉSOR (Lien intelligent)
+    // 5. Bouton TRÉSOR
     if (item.treasureMod !== null && item.treasureMod !== undefined) {
         const treasureBtn = document.createElement("button");
         treasureBtn.className = "treasure-btn";
@@ -225,20 +267,79 @@ function addInteractionButtons(item, container) {
         container.appendChild(treasureBtn);
     }
 
-    // Bouton SUIVANT (Lien vers autre table)
+    // 6. Bouton SUIVANT
     if (item.next) {
         item.next.forEach(nextKey => {
             const nextTable = gameData[nextKey];
             if (nextTable) {
                 const nextBtn = document.createElement("button");
                 nextBtn.className = "next-action-btn";
-                nextBtn.innerHTML = `➡️ ${nextTable.label}`; // Texte simplifié
+                nextBtn.innerHTML = `➡️ ${nextTable.label}`;
                 nextBtn.onclick = () => pickRandomItem(nextKey);
                 container.appendChild(nextBtn);
             }
         });
     }
 }
+
+function showSpecialResult(tableKey) {
+    // 1. On nettoie l'ancien résultat s'il y en a un
+    const old = document.getElementById("special-res");
+    if (old) old.remove();
+
+    // 2. On récupère les données
+    const table = gameData[tableKey];
+    if (!table) return;
+    
+    // On prend la source "base" (les tables cachées sont toujours dans base)
+    const items = table.sources['base'].items; 
+    
+    // 3. On lance le dé (ou on prend le seul item si la liste a une taille de 1)
+    let result;
+    let roll = 0;
+
+    if (items.length === 1) {
+        result = items[0]; // Pas de jet de dé si un seul choix (ex: Squelette)
+    } else {
+        roll = rollD6();
+        let index = roll - 1;
+        if (index >= items.length) index = items.length - 1;
+        result = items[index];
+    }
+
+    // --- CORRECTION ICI : GESTION DES MONSTRES ---
+    let displayHTML = "";
+
+    if (result.type === "monster") {
+        // Si c'est un monstre (Invocation), on le formate proprement
+        // On calcule la quantité (ex: "2d3+2" pour les Maîtrelames)
+        let count = parseAndCalculate(result.qty);
+        displayHTML = `<strong>${count} ${result.name}</strong><br>${result.desc}`;
+    } else {
+        // Si c'est du texte simple (Pouvoirs du Chaos, etc.)
+        displayHTML = result.text || result;
+    }
+    // ---------------------------------------------
+
+    // 4. On affiche le résultat
+    const div = document.createElement("div");
+    div.id = "special-res";
+    div.className = "dynamic-result-text";
+    
+    // On garde le style violet, ou rouge si c'est un monstre invoqué
+    if (result.type === "monster") {
+        div.style.borderColor = "#c0392b"; // Rouge bordure
+        div.style.color = "#e74c3c";       // Rouge texte
+        div.innerHTML = `<strong>⚠️ INVOCATION :</strong><br>${displayHTML}`;
+    } else {
+        div.style.borderColor = "#8e44ad"; // Violet
+        div.style.color = "#d2b4de";       // Violet clair
+        div.innerHTML = `<strong>Résultat ${roll > 0 ? '('+roll+')' : ''} :</strong> ${displayHTML}`;
+    }
+    
+    document.getElementById("interaction-area").appendChild(div);
+}
+
 
 // --- ACTIONS (DÉS, COMBAT, VISUEL) ---
 
@@ -353,3 +454,41 @@ function drawVisualEntrance() {
 
     openModal();
 }
+
+/* A AJOUTER À LA FIN DE script.js */
+
+// Fonction pour lancer un D8
+function rollD8() { return getRandomInt(1, 8); }
+
+// Fonction pour afficher le résultat du dé rapide
+function showQuickDice(faces) {
+    resetModal();
+    const title = document.getElementById("modal-title");
+    const diceDisplay = document.getElementById("dice-display");
+    const textDisplay = document.getElementById("text-display");
+    
+    // Titre
+    title.innerText = `Lancer de D${faces}`;
+    
+    // Calcul du résultat
+    let result = 0;
+    if (faces === 6) result = rollD6();
+    if (faces === 8) result = rollD8();
+    
+    // Affichage en GROS
+    diceDisplay.innerText = ""; // On vide la petite ligne
+    
+    // On met le chiffre en énorme au milieu
+    textDisplay.innerHTML = `
+        <div style="text-align:center; margin: 20px 0;">
+            <span style="font-size: 4em; font-weight: bold; color: ${faces === 8 ? '#8e44ad' : '#e67e22'};">
+                ${result}
+            </span>
+            <br>
+            <span style="color:#aaa; font-size:0.9em;">(Résultat sur ${faces} faces)</span>
+        </div>
+    `;
+    
+    openModal();
+}
+
