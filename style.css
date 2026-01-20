@@ -322,6 +322,41 @@ h1 {
     background: linear-gradient(135deg, #9b59b6, #8e44ad);
     border-bottom: 4px solid #6c3483;
 }
+/* --- SÉLECTEUR DE DÉS (RÉGLAGES) --- */
+.settings-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 15px;
+}
+
+.settings-section h3 {
+    margin-top: 0;
+    color: #f1c40f;
+}
+
+.dice-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.die-select-btn {
+    padding: 10px 15px;
+    background-color: #34495e;
+    border: 2px solid #555;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.die-select-btn.active {
+    background-color: #e67e22; /* Orange quand sélectionné */
+    border-color: #d35400;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(230, 126, 34, 0.5);
+}
 
 /* --- ANIMATIONS --- */
 @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }

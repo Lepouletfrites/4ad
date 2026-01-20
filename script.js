@@ -1,9 +1,8 @@
-/* script.js - Version Complète : Multi-sources, Images, Tests, Combat, Trésors */
+/* script.js - Version Complète : Multi-sources, Dé Global, Barre d'outils, Invocations */
 
 let currentMonster = null;
 let activeExtensions = []; 
-
-/* DANS script.js - REMPLACER LE BLOC DOMContentLoaded PAR CECI */
+let currentGlobalDie = 6; // Dé par défaut (d6)
 
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings(); 
@@ -12,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. CRÉATION DE LA BARRE D'OUTILS (DÉS RAPIDES) ---
     const toolBar = document.createElement("div");
-    toolBar.className = "dice-toolbar"; // On utilisera ce nom pour le style CSS
+    toolBar.className = "dice-toolbar"; 
     
     // Bouton D6 (Classique)
     const btnD6 = document.createElement("button");
@@ -26,15 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btnD8.className = "quick-dice-btn d8-btn";
     btnD8.onclick = () => showQuickDice(8);
 
-    // Ajout des boutons dans la barre
     toolBar.appendChild(btnD6);
     toolBar.appendChild(btnD8);
-    
-    // On ajoute la barre TOUT EN HAUT du conteneur
     container.appendChild(toolBar);
-    // -----------------------------------------------------
 
-    // --- 2. GÉNÉRATION DES TABLES (Code habituel) ---
+    // --- 2. GÉNÉRATION DES TABLES ---
     for (const key in gameData) {
         if (gameData[key].hidden) continue; 
 
@@ -50,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(btn);
     }
 
-    // Fermeture des modaux
+    // Fermeture des modaux au clic extérieur
     window.onclick = (event) => {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = "none";
@@ -58,10 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
 // --- OUTILS MATHÉMATIQUES ---
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function rollD6() { return getRandomInt(1, 6); }
+function rollD8() { return getRandomInt(1, 8); }
 
 function parseAndCalculate(text) {
     if (!text) return 0;
@@ -93,6 +88,35 @@ function resetModal() {
 function openSettings() {
     const list = document.getElementById("extensions-list");
     list.innerHTML = "";
+
+    // --- 1. SÉLECTION DU DÉ GLOBAL ---
+    const dieSection = document.createElement("div");
+    dieSection.className = "settings-section";
+    dieSection.innerHTML = "<h3>🎲 Dé du Donjon (Combats/Tests)</h3>";
+    
+    const diceOptions = [6, 8, 10, 12];
+    const diceContainer = document.createElement("div");
+    diceContainer.className = "dice-selector";
+
+    diceOptions.forEach(faces => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `d${faces}`;
+        btn.className = `die-select-btn ${currentGlobalDie === faces ? 'active' : ''}`;
+        btn.onclick = () => {
+            currentGlobalDie = faces;
+            saveSettings();
+            openSettings(); // Rafraîchir pour voir le changement visuel
+        };
+        diceContainer.appendChild(btn);
+    });
+    dieSection.appendChild(diceContainer);
+    list.appendChild(dieSection);
+
+    // --- 2. SÉLECTION DES EXTENSIONS ---
+    const extSection = document.createElement("div");
+    extSection.className = "settings-section";
+    extSection.innerHTML = "<h3>📚 Extensions</h3>";
+
     AVAILABLE_EXTENSIONS.forEach(ext => {
         const div = document.createElement("div");
         div.className = "extension-item";
@@ -113,16 +137,26 @@ function openSettings() {
         label.textContent = ext.name;
         div.appendChild(checkbox);
         div.appendChild(label);
-        list.appendChild(div);
+        extSection.appendChild(div);
     });
+    list.appendChild(extSection);
+
     document.getElementById("settings-modal").style.display = "block";
 }
 
 function loadSettings() {
-    const saved = localStorage.getItem("4ad_extensions");
-    activeExtensions = saved ? JSON.parse(saved) : AVAILABLE_EXTENSIONS.filter(e => e.default).map(e => e.id);
+    const savedExt = localStorage.getItem("4ad_extensions");
+    activeExtensions = savedExt ? JSON.parse(savedExt) : AVAILABLE_EXTENSIONS.filter(e => e.default).map(e => e.id);
+
+    // Chargement du dé global
+    const savedDie = localStorage.getItem("4ad_global_die");
+    currentGlobalDie = savedDie ? parseInt(savedDie) : 6;
 }
-function saveSettings() { localStorage.setItem("4ad_extensions", JSON.stringify(activeExtensions)); }
+
+function saveSettings() { 
+    localStorage.setItem("4ad_extensions", JSON.stringify(activeExtensions));
+    localStorage.setItem("4ad_global_die", currentGlobalDie.toString());
+}
 
 
 // --- CŒUR DU SYSTÈME : TIRAGE ---
@@ -132,7 +166,7 @@ function pickRandomItem(key, forcedIndex = null) {
 
     resetModal();
 
-    // 1. Choix de la Source (Base ou Extension)
+    // 1. Choix de la Source
     let chosenSourceKey = "base";
     let sourceNameDisplay = "";
     if (tableInfo.sources) {
@@ -147,13 +181,12 @@ function pickRandomItem(key, forcedIndex = null) {
     if (!sourceData || !sourceData.items) return;
     const itemsList = sourceData.items;
 
-    // 2. Tirage (Dés ou Index forcé)
+    // 2. Tirage
     let randomIndex;
     let rollText;
 
     if (forcedIndex !== null) {
         randomIndex = forcedIndex;
-        // Correction bornes
         if (randomIndex < 0) randomIndex = 0;
         if (randomIndex >= itemsList.length) randomIndex = itemsList.length - 1;
         rollText = `🔢 Résultat Calculé : ${randomIndex}`;
@@ -192,20 +225,18 @@ function pickRandomItem(key, forcedIndex = null) {
         addInteractionButtons(item, interactionArea);
 
     } else if (item.type === "treasure") {
-        // TRÉSOR (Calcul automatique de la valeur)
+        // TRÉSOR
         displayTreasureResult(item, textDisplay);
+        // On affiche les boutons (très important pour les objets magiques)
         addInteractionButtons(item, interactionArea); 
         
     } else {
         // TEXTE SIMPLE
         let finalText = item.text || item;
-        
-        // Si formule de difficulté (ex: Salle Enigme)
         if (item.levelFormula) {
             const lvl = parseAndCalculate(item.levelFormula);
             finalText += `<br><br><div style="border:2px solid #e67e22; padding:10px; border-radius:8px; color:#e67e22; font-weight:bold; font-size:1.2em;">🔒 DIFFICULTÉ CALCULÉE : ${lvl}</div>`;
         }
-        
         textDisplay.innerHTML = finalText;
         addInteractionButtons(item, interactionArea);
     }
@@ -214,14 +245,15 @@ function pickRandomItem(key, forcedIndex = null) {
 }
 
 // --- BOUTONS D'INTERACTION ---
-/* REMPLACEZ la fonction addInteractionButtons par celle-ci : */
 
 function addInteractionButtons(item, container) {
+    const dCheck = `d${currentGlobalDie}`; 
+
     // 1. Bouton COMBAT
     if (item.type === "monster") {
         const combatBtn = document.createElement("button");
         combatBtn.className = "combat-btn";
-        combatBtn.innerHTML = "⚔️ Combat (d6)";
+        combatBtn.innerHTML = `⚔️ Combat (${dCheck})`; 
         combatBtn.onclick = () => rollCombat(container);
         container.appendChild(combatBtn);
     }
@@ -230,29 +262,31 @@ function addInteractionButtons(item, container) {
     if (item.reaction) {
         const reactBtn = document.createElement("button");
         reactBtn.className = "reaction-btn";
-        reactBtn.innerHTML = "🎲 Réaction";
+        reactBtn.innerHTML = "🎲 Réaction (d6)";
         reactBtn.onclick = showReaction;
         container.appendChild(reactBtn);
     }
 
-    // --- 3. NOUVEAU : Bouton ACTION SPÉCIALE (Pour le Seigneur du Chaos) ---
+    // 3. Action Spéciale (Invocations, Magie...)
     if (item.specialAction) {
         const spBtn = document.createElement("button");
-        spBtn.className = "combat-btn"; // On garde le style bouton
-        spBtn.style.backgroundColor = "#8e44ad"; // Violet pour le Chaos/Magie
+        spBtn.className = "combat-btn"; 
+        spBtn.style.backgroundColor = "#8e44ad"; 
         spBtn.innerHTML = item.specialAction.label;
         spBtn.onclick = () => showSpecialResult(item.specialAction.table);
         container.appendChild(spBtn);
     }
-    // ---------------------------------------------------------------------
     
-    // 4. Bouton TEST (ex: Résoudre énigme)
+    // 4. Bouton TEST
     if (item.testBtn) {
+        // On remplace le texte "(d6)" par le dé actuel
+        const label = item.testBtn.replace("(d6)", `(${dCheck})`);
+        
         const testBtn = document.createElement("button");
         testBtn.className = "combat-btn"; 
         testBtn.style.backgroundColor = "#e67e22";
-        testBtn.innerHTML = item.testBtn;
-        testBtn.onclick = () => rollTest(container);
+        testBtn.innerHTML = label;
+        testBtn.onclick = () => rollTest(container, label);
         container.appendChild(testBtn);
     }
 
@@ -283,23 +317,20 @@ function addInteractionButtons(item, container) {
 }
 
 function showSpecialResult(tableKey) {
-    // 1. On nettoie l'ancien résultat s'il y en a un
     const old = document.getElementById("special-res");
     if (old) old.remove();
 
-    // 2. On récupère les données
     const table = gameData[tableKey];
     if (!table) return;
     
-    // On prend la source "base" (les tables cachées sont toujours dans base)
+    // On prend la source "base"
     const items = table.sources['base'].items; 
     
-    // 3. On lance le dé (ou on prend le seul item si la liste a une taille de 1)
     let result;
     let roll = 0;
 
     if (items.length === 1) {
-        result = items[0]; // Pas de jet de dé si un seul choix (ex: Squelette)
+        result = items[0]; 
     } else {
         roll = rollD6();
         let index = roll - 1;
@@ -307,33 +338,26 @@ function showSpecialResult(tableKey) {
         result = items[index];
     }
 
-    // --- CORRECTION ICI : GESTION DES MONSTRES ---
     let displayHTML = "";
 
     if (result.type === "monster") {
-        // Si c'est un monstre (Invocation), on le formate proprement
-        // On calcule la quantité (ex: "2d3+2" pour les Maîtrelames)
         let count = parseAndCalculate(result.qty);
         displayHTML = `<strong>${count} ${result.name}</strong><br>${result.desc}`;
     } else {
-        // Si c'est du texte simple (Pouvoirs du Chaos, etc.)
         displayHTML = result.text || result;
     }
-    // ---------------------------------------------
 
-    // 4. On affiche le résultat
     const div = document.createElement("div");
     div.id = "special-res";
     div.className = "dynamic-result-text";
     
-    // On garde le style violet, ou rouge si c'est un monstre invoqué
     if (result.type === "monster") {
-        div.style.borderColor = "#c0392b"; // Rouge bordure
-        div.style.color = "#e74c3c";       // Rouge texte
+        div.style.borderColor = "#c0392b"; 
+        div.style.color = "#e74c3c";       
         div.innerHTML = `<strong>⚠️ INVOCATION :</strong><br>${displayHTML}`;
     } else {
-        div.style.borderColor = "#8e44ad"; // Violet
-        div.style.color = "#d2b4de";       // Violet clair
+        div.style.borderColor = "#8e44ad"; 
+        div.style.color = "#d2b4de";       
         div.innerHTML = `<strong>Résultat ${roll > 0 ? '('+roll+')' : ''} :</strong> ${displayHTML}`;
     }
     
@@ -344,14 +368,20 @@ function showSpecialResult(tableKey) {
 // --- ACTIONS (DÉS, COMBAT, VISUEL) ---
 
 function rollCombat(container) {
-    displayUniqueResult(container, "combat-unique-res", "#e74c3c", "#2c0b0b", "⚔️ Attaque");
+    const roll = getRandomInt(1, currentGlobalDie);
+    const color = currentGlobalDie > 6 ? "#8e44ad" : "#e74c3c";
+    
+    displayUniqueResult(container, "combat-unique-res", color, "#2c0b0b", `⚔️ Attaque (d${currentGlobalDie})`, roll);
 }
 
-function rollTest(container) {
-    displayUniqueResult(container, "test-unique-res", "#e67e22", "#2d1b0e", "🎲 Votre Jet");
+function rollTest(container, label) {
+    const roll = getRandomInt(1, currentGlobalDie);
+    const cleanLabel = label || `🎲 Test (d${currentGlobalDie})`;
+    
+    displayUniqueResult(container, "test-unique-res", "#e67e22", "#2d1b0e", cleanLabel, roll);
 }
 
-function displayUniqueResult(container, id, color, bg, label) {
+function displayUniqueResult(container, id, color, bg, label, value) {
     let box = document.getElementById(id);
     if (!box) {
         box = document.createElement("div");
@@ -362,8 +392,9 @@ function displayUniqueResult(container, id, color, bg, label) {
         box.style.backgroundColor = bg;
         container.appendChild(box);
     }
-    const roll = rollD6();
-    box.innerHTML = `${label} : <span style="font-size:1.5em">${roll}</span>`;
+    const finalRoll = value !== undefined ? value : rollD6();
+    
+    box.innerHTML = `${label} : <span style="font-size:1.5em">${finalRoll}</span>`;
     box.style.animation = 'none';
     box.offsetHeight; 
     box.style.animation = 'fadeIn 0.2s';
@@ -403,7 +434,32 @@ function displayTreasureResult(item, target, prefix = "") {
     target.innerHTML = content;
 }
 
-// --- FONCTIONS VISUELLES ---
+// --- FONCTIONS VISUELLES ET OUTILS RAPIDES ---
+
+function showQuickDice(faces) {
+    resetModal();
+    const title = document.getElementById("modal-title");
+    const diceDisplay = document.getElementById("dice-display");
+    const textDisplay = document.getElementById("text-display");
+    
+    title.innerText = `Lancer de D${faces}`;
+    
+    let result = getRandomInt(1, faces);
+    
+    diceDisplay.innerText = ""; 
+    
+    textDisplay.innerHTML = `
+        <div style="text-align:center; margin: 20px 0;">
+            <span style="font-size: 4em; font-weight: bold; color: ${faces === 8 ? '#8e44ad' : '#e67e22'};">
+                ${result}
+            </span>
+            <br>
+            <span style="color:#aaa; font-size:0.9em;">(Résultat sur ${faces} faces)</span>
+        </div>
+    `;
+    
+    openModal();
+}
 
 function drawNewTile() {
     resetModal();
@@ -454,41 +510,3 @@ function drawVisualEntrance() {
 
     openModal();
 }
-
-/* A AJOUTER À LA FIN DE script.js */
-
-// Fonction pour lancer un D8
-function rollD8() { return getRandomInt(1, 8); }
-
-// Fonction pour afficher le résultat du dé rapide
-function showQuickDice(faces) {
-    resetModal();
-    const title = document.getElementById("modal-title");
-    const diceDisplay = document.getElementById("dice-display");
-    const textDisplay = document.getElementById("text-display");
-    
-    // Titre
-    title.innerText = `Lancer de D${faces}`;
-    
-    // Calcul du résultat
-    let result = 0;
-    if (faces === 6) result = rollD6();
-    if (faces === 8) result = rollD8();
-    
-    // Affichage en GROS
-    diceDisplay.innerText = ""; // On vide la petite ligne
-    
-    // On met le chiffre en énorme au milieu
-    textDisplay.innerHTML = `
-        <div style="text-align:center; margin: 20px 0;">
-            <span style="font-size: 4em; font-weight: bold; color: ${faces === 8 ? '#8e44ad' : '#e67e22'};">
-                ${result}
-            </span>
-            <br>
-            <span style="color:#aaa; font-size:0.9em;">(Résultat sur ${faces} faces)</span>
-        </div>
-    `;
-    
-    openModal();
-}
-
