@@ -1,0 +1,279 @@
+/* style.css - Version Mobile First */
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px 10px; /* Moins de padding sur les côtés pour mobile */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent; /* Enlève le flash bleu au clic */
+}
+
+h1 {
+    color: #ff5555;
+    text-shadow: 2px 2px #000;
+    margin: 10px 0 30px 0;
+    font-size: 1.8rem;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 50px; /* Espace pour scroller */
+}
+
+/* --- GRILLE DE BOUTONS --- */
+.grid-menu {
+    display: grid;
+    /* 2 colonnes sur mobile, plus sur grand écran */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+    gap: 15px;
+}
+
+.table-btn {
+    background-color: #2c2c2c;
+    color: #ffcc00;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 20px 10px;
+    border: 1px solid #444;
+    border-radius: 12px; /* Bords plus ronds */
+    cursor: pointer;
+    box-shadow: 0 4px 0 #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 80px; /* Hauteur min pour le pouce */
+    transition: transform 0.1s;
+}
+
+.table-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #111;
+    background-color: #333;
+}
+
+/* --- LE MODAL (POPUP) --- */
+.modal {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.85); /* Fond sombre */
+    backdrop-filter: blur(5px); /* Effet de flou moderne */
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: #1e1e1e;
+    margin: 15% auto; /* 15% du haut */
+    padding: 20px;
+    border: 1px solid #ff5555;
+    border-radius: 15px;
+    width: 85%; /* Largeur mobile */
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(255, 85, 85, 0.3);
+    position: relative;
+    animation: slideUp 0.3s;
+}
+
+/* Bouton fermer (X) */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    padding: 10px; /* Zone de clic plus grande */
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+#modal-title {
+    color: #ff5555;
+    margin-top: 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+.dice-roll {
+    color: #888;
+    font-style: italic;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.result-text {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.monster-count {
+    color: #ff5555;
+    font-weight: bold;
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* --- BOUTONS INTERACTION (DANS LE MODAL) --- */
+#interaction-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #444;
+}
+
+.reaction-btn, .treasure-btn {
+    flex: 1; /* Prend la place dispo */
+    min-width: 120px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.reaction-btn { background-color: #3b71ca; color: white; }
+.treasure-btn { background-color: #d4ac0d; color: black; }
+
+.dynamic-result-text {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: #000;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Animations */
+@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+@keyframes slideUp { from {transform: translateY(50px);} to {transform: translateY(0);} }
+
+/* Ajout pour le bouton "Action Suivante" */
+.next-action-btn {
+    background-color: #2ecc71; /* Vert */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 5px;
+    width: 100%; /* Prend toute la largeur sur mobile */
+    box-shadow: 0 4px 0 #27ae60;
+    transition: transform 0.1s;
+}
+
+.next-action-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+.next-action-btn:hover {
+    background-color: #27ae60;
+}
+
+/* --- Ajout bouton Combat --- */
+.combat-btn {
+    background-color: #e74c3c; /* Rouge vif */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    flex: 1; /* Prend de la place comme les autres */
+    min-width: 120px;
+}
+
+.combat-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Style pour l'affichage du résultat de combat */
+.combat-result {
+    color: #e74c3c;
+    font-weight: bold;
+    border: 1px solid #e74c3c;
+    background-color: #2c0b0b;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    animation: fadeIn 0.2s;
+}
+/* Ajoutez ceci à la fin de votre fichier style.css */
+
+/* --- NOUVEAU : Style du Gros Bouton Tuile --- */
+#new-tile-btn {
+    background-color: #8e44ad; /* Violet */
+    color: white;
+    width: 100%;
+    padding: 20px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: 2px solid #6c3483;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 25px; /* Espace avant la grille */
+    box-shadow: 0 6px 0 #512e62;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.1s;
+}
+
+#new-tile-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #512e62;
+}
+
+/* Style de l'image dans le modal */
+#/* Style de l'image dans le modal */
+/* style.css */
+
+#modal-image {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;  /* L'image reste entière */
+    object-position: center; /* Force le centrage de l'image dans le cadre noir */
+    background-color: #000;
+    
+    max-width: 500px;
+    border-radius: 8px;
+    border: 2px solid #ff5555;
+    
+    /* C'est ces 3 lignes qui centrent le bloc image : */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px; 
+}
+
+

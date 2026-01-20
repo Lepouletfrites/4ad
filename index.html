@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Compagnon 4 Contre les Ténèbres</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>4 Contre les Ténèbres</h1>
+
+    <div class="container">
+        <button id="new-tile-btn" onclick="drawNewTile()">🏰 TIRER UNE NOUVELLE PIÈCE (Visuel)</button>
+
+        <div id="buttons-container" class="grid-menu"></div>
+    </div>
+
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-title">Titre</h2>
+            <div id="modal-body">
+                <img id="modal-image" src="" alt="Tuile Donjon" style="display:none;">
+                
+                <div id="dice-display" class="dice-roll"></div>
+                <div id="text-display" class="result-text"></div>
+                <div id="interaction-area"></div> 
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
