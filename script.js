@@ -222,6 +222,7 @@ function pickRandomItem(key, forcedIndex = null) {
         currentMonster = item;
         let count = parseAndCalculate(item.qty);
         textDisplay.innerHTML = `<span class="monster-count">${count} ${item.name}</span> ${item.desc}`;
+        addMonsterTracker(interactionArea, count, item.desc);
         addInteractionButtons(item, interactionArea);
 
     } else if (item.type === "treasure") {
@@ -510,3 +511,53 @@ function drawVisualEntrance() {
 
     openModal();
 }
+// --- FONCTION COMPTEUR PV / SBIRES ---
+function addMonsterTracker(container, count, description) {
+    // 1. Déterminer si c'est des PV (Boss) ou un Nombre (Sbires)
+    let startValue = count;
+    let label = "Ennemis restants";
+    
+    // Si c'est un monstre unique, on cherche ses PV dans la description
+    // On cherche un chiffre suivi de "PV" ou "points de vie"
+    if (count === 1) {
+        const pvMatch = description.match(/(\d+)\s*(PV|points de vie)/i);
+        if (pvMatch) {
+            startValue = parseInt(pvMatch[1]);
+            label = "Points de Vie (Boss)";
+        }
+    }
+
+    // 2. Création de l'interface HTML
+    const wrapper = document.createElement("div");
+    wrapper.className = "tracker-container";
+    
+    wrapper.innerHTML = `
+        <span class="tracker-label">${label}</span>
+        <div class="tracker-controls">
+            <button class="tracker-btn" onclick="updateTracker(this, -1)">-</button>
+            <span class="tracker-value" id="current-tracker-val">${startValue}</span>
+            <button class="tracker-btn" onclick="updateTracker(this, 1)">+</button>
+        </div>
+    `;
+
+    container.appendChild(wrapper);
+}
+
+// Fonction appelée par les boutons + et -
+window.updateTracker = function(btn, change) {
+    const display = btn.parentElement.querySelector(".tracker-value");
+    let val = parseInt(display.innerText);
+    val += change;
+    
+    if (val < 0) val = 0; // Pas de PV négatifs
+    
+    display.innerText = val;
+    
+    // Changement visuel si mort
+    if (val === 0) {
+        display.classList.add("dead");
+        display.innerHTML = "💀";
+    } else {
+        display.classList.remove("dead");
+    }
+};
