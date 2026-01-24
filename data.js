@@ -90,164 +90,26 @@ const gameData = {
             }
         }
     },
-
-
-    /* -------------------------------------------------------------------------
-       B. TABLES DE MONSTRES (Base + Extensions)
-       ------------------------------------------------------------------------- */
-
-    "nuisibles": {
-        label: "🐀 Table des Nuisibles",
-        sources: {
-            "mt_base": {
-                items: [
-                    // 1. Rats Géants
-                    { type: "monster", name: "Rats Géants", qty: "3d6", desc: "<b>(Niv 1)</b>. Pas de trésor.<br>⚠️ <b>Infection :</b> Tout personnage blessé a 1 chance sur 6 de perdre 1 PV supplémentaire.", treasureMod: null, reaction: ["Fuir", "Fuir", "Fuir", "Se battre", "Se battre", "Se battre"] },
-                    // 2. Chauves-souris
-                    { type: "monster", name: "Chauves-souris Vampires", qty: "3d6", desc: "<b>(Niv 1)</b>. Pas de trésor. (Non Morts-vivants).<br>🔊 <b>Cris :</b> Les sorts sont lancés à -1.", treasureMod: null, reaction: ["Fuir", "Fuir", "Fuir", "Se battre", "Se battre", "Se battre"] },
-                    // 3. Gobelins de colonie
-                    { type: "monster", name: "Gobelins de colonie", qty: "2d6", desc: "<b>(Niv 3)</b>. Trésor -1. Moral -1.", treasureMod: -1, reaction: ["Fuir", "Fuir si en sous-nombre", "Fuir si en sous-nombre", "Soudoyer (5 po/tête)", "Se battre", "Se battre"] },
-                    // 4. Mille-pattes
-                    { type: "monster", name: "Mille-pattes géants", qty: "1d6", desc: "<b>(Niv 3)</b>. Pas de trésor.<br>☠️ <b>Poison :</b> Blessé = Jet de Sauvegarde poison Niv 2 ou perdre 1 PV sup.", treasureMod: null, reaction: ["Fuir", "Fuir si en sous-nombre", "Fuir si en sous-nombre", "Se battre", "Se battre", "Se battre"] },
-                    // 5. Grenouilles
-                    { type: "monster", name: "Grenouilles vampires", qty: "1d6", desc: "<b>(Niv 4)</b>. Trésor -1. (Non Morts-vivants).", treasureMod: -1, reaction: ["Fuir", "Se battre", "Se battre", "Se battre", "Se battre jusqu'à la mort", "Se battre jusqu'à la mort"] },
-                    // 6. Rats Squelettes
-                    { type: "monster", name: "Rats squelettes", qty: "2d6", desc: "<b>(Niv 3 Morts-vivants)</b>. Pas de trésor.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.<br>🚫 <b>Arcs/Frondes :</b> Inutiles.", treasureMod: null, reaction: ["Fuir", "Fuir", "Se battre", "Se battre", "Se battre", "Se battre"] }
-                ]
-            },
-            "diaboliques": {
-                items: [
-                    // 1. Araignées
-                    { type: "monster", name: "Araignées", qty: "3d6+3", desc: "<b>(Niv 3)</b>. Trésor -1 (Toiles).<br>🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV fin combat.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.", treasureMod: -1, reaction: ["Se battre", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 2. Stirges
-                    { type: "monster", name: "Stirges", qty: "2d6+2", desc: "<b>(Niv 4)</b>. Pas de trésor.<br>🩸 <b>Succion :</b> Blessure = -1 PV auto chaque tour jusqu'à la mort des stirges.", treasureMod: null, reaction: ["Se battre", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 3. Serpents
-                    { type: "monster", name: "Serpents Géants", qty: "1d6+4", desc: "<b>(Niv 5)</b>. Trésor Normal.<br>🐍 <b>Poison :</b> Blessure = Save Niv 4 ou -1 PV sup.", treasureMod: 0, reaction: ["Pacifique", "Pacifique", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 4. Crapauds
-                    { type: "monster", name: "Crapauds Géants", qty: "1d6+4", desc: "<b>(Niv 5)</b>. Pas de trésor.<br>💥 <b>Explosion :</b> Tuer au contact = Save Poison Niv 3 ou -1 PV (sauf arc/sort).", treasureMod: null, reaction: ["Pacifique", "Pacifique", "Pacifique", "Se battre", "Se battre", "Se battre"] },
-                    // 5. Squelettes en Armure
-                    { type: "monster", name: "Squelettes en Armure", qty: "2d3+4", desc: "<b>(Niv 5 Morts-vivants)</b>. Trésor -1.<br>🛡️ <b>Armure :</b> Pas de bonus écrasant. Arc à -1.", treasureMod: -1, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 6. Hommes-Boucs
-                    { type: "monster", name: "Hommes-Boucs", qty: "2d3+1", desc: "<b>(Niv 6)</b>. Trésor Normal. Moral +2.<br>🐐 <b>Charge :</b> Niv 8 au 1er tour !", treasureMod: 0, reaction: ["Soudoyer (30 po)", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] }
-                ]
-            }
-        }
+    
+     "boss": {
+        label: "💀 Boss",
+        // On met une source vide, car le script va ignorer ça et aller dans la POOL
+        sources: { "base": { items: [] } } 
     },
 
     "sbires": {
-        label: "👹 Table des Sbires",
-        sources: {
-            "mt_base": {
-                items: [
-                    // 1. Squelettes
-                    { type: "monster", name: "Squelettes", qty: "1d6+2", desc: "<b>(Niv 3 Morts-vivants)</b>. Pas de trésor. Pas de moral.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.<br>🏹 <b>Flèches :</b> -1 Attaque.", treasureMod: null, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 2. Zombies
-                    { type: "monster", name: "Zombies", qty: "1d6", desc: "<b>(Niv 3 Morts-vivants)</b>. Pas de trésor. Pas de moral.<br>🏹 <b>Flèches :</b> -1 Attaque.", treasureMod: null, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 3. Gobelins
-                    { type: "monster", name: "Gobelins", qty: "1d6+3", desc: "<b>(Niv 3)</b>. Trésor -1.<br>⚡ <b>Surprise :</b> 1 chance sur 6 d'agir avant le groupe.", treasureMod: -1, reaction: ["Fuir si sous-nombre", "Soudoyer (5 po/tête)", "Soudoyer (5 po/tête)", "Se battre", "Se battre", "Se battre"] },
-                    // 4. Hobgobelins
-                    { type: "monster", name: "Hobgobelins", qty: "1d6", desc: "<b>(Niv 4)</b>. Trésor +1.", treasureMod: 1, reaction: ["Fuir si sous-nombre", "Soudoyer (10 po/tête)", "Soudoyer (10 po/tête)", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 5. Orcs
-                    { type: "monster", name: "Orcs", qty: "1d6+1", desc: "<b>(Niv 4)</b>. Trésor Normal.<br>😱 <b>Peur :</b> Test Moral si tué par magie (à -1 si groupe < 50%).<br>🚫 <b>Magie :</b> Pas d'objets magiques (Remplacer par d6 x d6 po).", treasureMod: 0, reaction: ["Soudoyer (10 po/tête)", "Soudoyer (10 po/tête)", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 6. Trolls
-                    { type: "monster", name: "Trolls", qty: "1d3", desc: "<b>(Niv 5)</b>. Trésor Normal.<br>♻️ <b>Régénération :</b> Sauf si tué par sort/acide ou découpé (Action). Sinon revient sur 5-6.", treasureMod: 0, reaction: ["Se battre", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort (Auto si Nain)"] },
-                    // 7. Champignhommes
-                    { type: "monster", name: "Champignhommes", qty: "2d6", desc: "<b>(Niv 3)</b>. Trésor Normal.<br>🍄 <b>Poison :</b> Dégâts = Save Poison Niv 3 ou -1 PV.<br><i>(Halfelins ajoutent leur niveau).</i>", treasureMod: 0, reaction: ["Soudoyer (d6 po/tête)", "Soudoyer (d6 po/tête)", "Se battre", "Se battre", "Se battre", "Se battre"] }
-                ]
-            },
-            "diaboliques": {
-                items: [
-                    // 1. Pillards Orcs
-                    { type: "monster", name: "Pillards Orcs", qty: "1d6+6", desc: "<b>(Niv 5)</b>. 3 Trésors à -1.<br>😱 <b>Peur Magie :</b> Moral si tué par sort (-1 si < 50%).", treasureMod: -1, reaction: ["Soudoyer (40 po)", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 2. Cockatrices
-                    { type: "monster", name: "Cockatrices", qty: "1d3+4", desc: "<b>(Niv 5)</b>. Trésor Normal.<br>🗿 <b>Pétrification :</b> Blessure = Save Niv 2 ou Pétrifié (Soin: Bénédiction).", treasureMod: 0, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 3. Nains Possédés
-                    { type: "monster", name: "Nains Possédés", qty: "1d6+3", desc: "<b>(Niv 5 Morts-vivants)</b>. Trésor Normal.<br>👿 <b>Tenace :</b> Mort sur 1-2. Sur 3-6, attaque encore une fois !", treasureMod: 0, reaction: ["Soudoyer (30 po)", "Soudoyer (30 po)", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 4. Gnolls
-                    { type: "monster", name: "Gnolls", qty: "2d3+4", desc: "<b>(Niv 6)</b>. Trésor Normal. Moral +1.<br>🩸 <b>Frénésie :</b> Niv 7 contre les blessés.", treasureMod: 0, reaction: ["Soudoyer (20 po)", "Soudoyer (20 po)", "Se battre", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 5. Maîtrelames Hobgobelins
-                    { type: "monster", name: "Maîtrelames Hobgobelins", qty: "2d3+2", desc: "<b>(Niv 6)</b>. Trésor +1.<br>⚔️ <b>Contre-attaque :</b> Si vous faites 1 au dé (contact), subissez une attaque bonus.", treasureMod: 1, reaction: ["Soudoyer (30 po)", "Soudoyer (30 po)", "Soudoyer (30 po)", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 6. Esclavagistes
-                    { type: "monster", name: "Esclavagistes du Chaos", qty: "2d3+2", desc: "<b>(Niv 7)</b>. 2 Trésors. Moral +1.<br>⛓️ <b>Piège :</b> Résolvez un Piège à Ours (Niv 4) avant le combat (sauf errants).", treasureMod: 0, reaction: ["Soudoyer (40 po)", "Soudoyer (40 po)", "Soudoyer (40 po)", "Se battre", "Se battre", "Se battre"] }
-                ]
-            }
-        }
+        label: "⚔️ Sbires",
+        sources: { "base": { items: [] } }
+    },
+
+    "nuisibles": {  // <--- C'est celui-là qui te manquait !
+        label: "🐀 Nuisibles / Vermines",
+        sources: { "base": { items: [] } }
     },
 
     "monstres_etranges": {
-        label: "🐉 Monstres Étranges",
-        sources: {
-            "mt_base": {
-                items: [
-                    // 1. Minotaure
-                    { type: "monster", name: "Minotaure", qty: "1", desc: "<b>(Niv 5, 4 PV, 2 Atq)</b>. Trésor Normal.<br>🐂 <b>Charge :</b> Votre 1er jet de Défense est à -1.<br><i>Déteste les Halfelins.</i>", treasureMod: 0, reaction: ["Soudoyer (60 po)", "Soudoyer (60 po)", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 2. Dévoreur d'acier
-                    { type: "monster", name: "Dévoreur d’acier", qty: "1", desc: "<b>(Niv 3, 4 PV, 3 Atq)</b>. Pas de trésor.<br>🛡️ <b>Mangeur de métal :</b> Ignore Armure Lourde.<br>⚠️ <b>Touche = Détruit objet :</b> Armure ➔ Bouclier ➔ Arme ➔ 3d6 po (Pas de dégâts PV).", treasureMod: null, reaction: ["Fuir", "Soudoyer (d6 po - Pas d'Or des fous)", "Soudoyer (d6 po)", "Se battre", "Se battre", "Se battre"] },
-                    // 3. Chimère
-                    { type: "monster", name: "Chimère", qty: "1", desc: "<b>(Niv 5, 6 PV, 3 Atq)</b>. Trésor Normal.<br>🔥 <b>Souffle (1-2 sur d6) :</b> Remplace les attaques. Tout le monde fait un Save Feu Niv 4 ou perd 1 PV.", treasureMod: 0, reaction: ["Soudoyer (50 po)", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 4. Catoblépas
-                    { type: "monster", name: "Catoblépas", qty: "1", desc: "<b>(Niv 4, 4 PV)</b>. Trésor +1.<br>👁️ <b>Regard (Début du combat) :</b> Tous les persos font un Save Niv 4 ou perdent 1 PV.", treasureMod: 1, reaction: ["Fuir", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 5. Araignée géante
-                    { type: "monster", name: "Araignée géante", qty: "1", desc: "<b>(Niv 5, 3 PV, 2 Atq)</b>. <b>2 Jets de Trésor !</b><br>🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV sup.", treasureMod: 0, reaction: ["Se battre", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 6. Gremlins
-                    { text: "<b>6. Gremlins Invisibles</b><br>Ils volent <b>d6+3 objets</b> !<br><b>Ordre de vol :</b> Magique ➔ Parchemin ➔ Potion ➔ Arme ➔ Gemme ➔ Pièces (paquet de 10).<br><i>Impossibles à combattre. Pas d'XP.</i><br>(S'ils volent TOUT : Vous gagnez un Indice)." }
-                ]
-            },
-            "diaboliques": {
-                items: [
-                    // 1. Doppleganger
-                    { type: "monster", name: "Doppleganger", qty: "1", desc: "<b>(Niv 5, 5 PV)</b>. Trésor Normal.<br>🎭 <b>Copie :</b> Prend l'apparence d'un PJ.<br>😵 <b>Confusion :</b> Chaque tour, faites un Save Niv 4 pour attaquer.<br><i>Le PJ copié attaque normalement.</i>", treasureMod: 0, reaction: ["Se battre", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 2. Manterôdeur
-                    { type: "monster", name: "Manterôdeur", qty: "1", desc: "<b>(Niv 6, 5 PV)</b>. Pas de trésor. (Jamais errant).<br>👀 <b>Plafond :</b> Repérer sur 1-2 (1-4 si Roublard) = Fuite possible.<br>😱 <b>Embuscade :</b> Save Esquive Niv 3 (-1 Lourde, +1 Elfe/Roub).<br><b>Échec :</b> Paralysé et -1 PV auto chaque tour.", treasureMod: null, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 3. Limon vert
-                    { type: "monster", name: "Limon vert", qty: "1", desc: "<b>(Niv 6, 8 PV, 3 Atq)</b>. Pas de trésor.<br>🤢 <b>Maladie :</b> Touche = Save Maladie Niv 4 (Halfelin +½).<br><b>Effet :</b> Chaque fois que vous perdez 1 PV, perdez-en un autre.<br><i>Soin : Bénédiction. Mort = Devient Limon.</i>", treasureMod: null, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 4. Cube acide
-                    { type: "monster", name: "Cube acide", qty: "1", desc: "<b>(Niv 6, 6 PV)</b>. <b>3 Trésors</b>.<br>🧊 <b>Transparent :</b> Attaque en 1er sur 1-3.<br>📦 <b>Engloutissement :</b> Save Niv 2 (Niv 4 si attaqué au CàC) ou paralysé.<br>🚫 <b>Immune :</b> Sommeil, Éclair. Pas de bonus Roublard.", treasureMod: 0, reaction: ["Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 5. Golem de chair
-                    { type: "monster", name: "Golem de chair", qty: "1", desc: "<b>(Niv 7, 8 PV, 2 Atq)</b>. Trésor Normal. Moral +2.<br>🛡️ <b>Immune :</b> Écrasant et Sorts (Sauf Boule de Feu).<br>💥 <b>Brutal :</b> Si vous faites 1 en Défense = 2 Dégâts.", treasureMod: 0, reaction: ["Pacifique", "Pacifique", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 6. Monstre aux cimeterres
-                    { type: "monster", name: "Monstre aux cimeterres", qty: "1", desc: "<b>(Niv 8, 12 PV, 2 Atq)</b>. <b>2 Trésors +1</b>.<br>⚔️ <b>Lames :</b> Bras-cimeterres.<br>🚫 <b>Immune :</b> Sommeil.<br><i>Si Nain dans le groupe : Combat à mort.</i>", treasureMod: 1, reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Se battre", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] }
-                ]
-            }
-        }
-    },
-
-    "boss": {
-        label: "💀 Table des Boss",
-        sources: {
-            "mt_base": {
-                items: [
-                    // 1. Momie
-                    { type: "monster", name: "Momie", qty: "1", desc: "<b>(Niv 5 Mort-vivant, 4 PV, 2 Atq)</b>. Trésor +2.<br>☣️ <b>Malédiction :</b> Si tué par Momie, le perso devient Momie.<br>🔥 <b>Boule de feu :</b> Attaque à +2 contre elle.<br><i>Pas de moral.</i>", treasureMod: 2, reaction: ["Se battre", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre"] },
-                    // 2. Brute Orque
-                    { type: "monster", name: "Brute Orque", qty: "1", desc: "<b>(Niv 5, 5 PV, 2 Atq)</b>. Trésor +1.<br>🚫 <b>Pas d'objets magiques :</b> Si le trésor indique un objet magique, remplacez par <b>2d6 x d6 po</b>.", treasureMod: 1, reaction: ["Soudoyer (50 po)", "Se battre", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 3. Ogre
-                    { type: "monster", name: "Ogre", qty: "1", desc: "<b>(Niv 5, 6 PV)</b>. Trésor Normal.<br>💢 <b>Brutal :</b> Inflige <b>2 Dégâts</b> par coup !", treasureMod: 0, reaction: ["Soudoyer (30 po)", "Se battre", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 4. Méduse
-                    { type: "monster", name: "Méduse", qty: "1", desc: "<b>(Niv 4, 4 PV)</b>. Trésor +1.<br>🗿 <b>Regard (Début combat) :</b> Save Niv 4 ou <b>Pétrifié</b> (Hors-jeu).<br><i>(Roublards +½ niv. Soin : Bénédiction).</i>", treasureMod: 1, reaction: ["Soudoyer (6d6 po)", "Propose une Quête (Allez au menu)", "Se battre", "Se battre", "Se battre", "Se battre jusqu’à la mort"] },
-                    // 5. Seigneur du Chaos (Base)
-                    { type: "monster", name: "Seigneur du Chaos", qty: "1", desc: "<b>(Niv 6, 4 PV, 3 Atq)</b>. <b>2 Trésors à +1</b>.<br>🎲 <b>Mort du Boss :</b> Sur 5-6 au d6, trouvez un Indice.", treasureMod: 1, specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" }, reaction: ["Fuir si sous-nombre", "Se battre", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 6. Petit Dragon
-                    { type: "monster", name: "Petit Dragon", qty: "1", desc: "<b>(Niv 6, 5 PV, 2 Atq)</b>. <b>3 Trésors à +1</b>.<br>🔥 <b>Chaque tour (1-2 sur d6) :</b> Souffle ! (Save Niv 6 ou 1 Dégât).<br>🦷 <b>Sinon :</b> 2 Attaques (Morsures).", treasureMod: 1, reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (Tout l'or, min 100po / ou Obj Magique)", "Soudoyer (Tout l'or, min 100po / ou Obj Magique)", "Se battre", "Se battre", "Propose une Quête"] }
-                ]
-            },
-            "diaboliques": {
-                items: [
-                    // 1. Seigneur du Chaos (Diabolique)
-                    { type: "monster", name: "Seigneur du Chaos (Diabolique)", qty: "1", desc: "<b>(Niv 6, 7 PV, 3 Atq)</b>. <b>3 Trésors</b>.<br>⚡ <b>Pouvoirs :</b> (1-4 Œil, 5 Drain, 6 Flammes).<br>⛓️ <b>Esclaves :</b> Libérés a la fin du combat = Indice mais jet Monstres Errants.", treasureMod: 0, specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" }, reaction: ["Soudoyer (200 po)", "Soudoyer (200 po)", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 2. Démon Squelette
-                    { type: "monster", name: "Démon Squelette", qty: "1", desc: "<b>(Niv 7 Mort-vivant, 8 PV, 2 Atq)</b>. <b>3 Trésors</b>. Moral +1.<br>🩸 <b>Sang Maudit :</b> Chaque fois que VOUS êtes blessé, un Squelette apparaît !", treasureMod: 0, specialAction: { label: "💀 Sang : Invoquer Squelette", table: "invocation_squelette_armure" }, reaction: ["Défi magique", "Défi magique", "Se battre", "Se battre", "Se battre", "Quête"] },
-                    // 3. Commandant Hobgobelin
-                    { type: "monster", name: "Commandant Hobgobelin", qty: "1", desc: "<b>(Niv 7, 8 PV, 2 Atq)</b>. <b>2 Trésors</b>.<br>⚔️ <b>Lame Vibrante :</b> À chaque attaque du Boss, 3 chances sur 6 que des Maîtrelames arrivent.", treasureMod: 0, specialAction: { label: "⚔️ Appel : Invoquer Maîtrelames", table: "invocation_maitrelame" }, reaction: ["Soudoyer (400 po)", "Soudoyer (400 po)", "Soudoyer (400 po)", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 4. Apparition
-                    { type: "monster", name: "Apparition", qty: "1", desc: "<b>(Niv 7 Mort-vivant, 6 PV)</b>. <b>2 Trésors</b>.<br>🕯️ <b>Noir (2/6) :</b> Lanternes éteintes.<br>😱 <b>Touche :</b> Save Magie Niv 4 ou Perte 1 Niveau.<br>🛡️ <b>Immunité :</b> Armes magiques/argent/feu/eau bénite seulement.", treasureMod: 0, reaction: ["Soudoyer (Objet Magique)", "Soudoyer (Objet Magique)", "Quête", "Se battre", "Se battre", "Se battre"] },
-                    // 5. Troll Massif
-                    { type: "monster", name: "Troll Massif", qty: "1", desc: "<b>(Niv 8, 7 PV, 2 Atq)</b>. <b>4 Trésors</b>.<br>🔨 <b>Résistant :</b> Écrasant à -1.<br>♻️ <b>Régénération :</b> 1 PV/tour (Sauf feu/acide/découpe).", treasureMod: 0, reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Se battre jusqu’à la mort", "Se battre jusqu’à la mort"] },
-                    // 6. Jeune Dragon Rouge
-                    { type: "monster", name: "Jeune Dragon Rouge", qty: "1", desc: "<b>(Niv 9, 8 PV, 2 Atq)</b>. <b>4 Trésors +1</b>.<br>🔥 <b>1er Tour :</b> Souffle Feu (Save Niv 7 ou d3 Dégâts).<br>Ensuite : 2 Attaques.", treasureMod: 1, reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (300 po)", "Soudoyer (300 po)", "Se battre", "Se battre", "Quête"] }
-                ]
-            }
-        }
+        label: "👁️ Monstres Étranges",
+        sources: { "base": { items: [] } }
     },
 
     "monstres_errants": {
@@ -308,7 +170,7 @@ const gameData = {
             "base": {
                 items: [
                     "<b>1. Fontaine</b><br>Tous les personnages blessés récupèrent <b>1 PV</b> la première fois.<br><i>Les fontaines suivantes n’auront aucun effet.</i>",
-                    "<b>2. Temple béni</b><br>Un personnage au choix gagne <b>+1 Attaque</b> contre les morts-vivants ou les démons.",
+                    "<b>2. Temple béni</b><br>Un personnage au choix gagne <b>+1 Attaque</b> contre les morts-vivants ou les démons.(1 combat)",
                     "<b>3. Armurerie</b><br>Tous les personnages peuvent <b>changer d’armes</b> s’ils le souhaitent.",
                     "<b>4. Autel maudit</b><br>Un personnage au hasard est <b>Maudit (-1 Défense)</b>.<br><i>Rompre :</i> Tuer un Boss seul, Temple béni, ou Bénédiction.",
                     { text: "<b>5. Statue</b><br>Vous pouvez l'ignorer ou la toucher.<br><i>Si vous la touchez, elle peut s'animer ou se briser (Trésor).</i>", next: ["statue_result"] },
@@ -613,4 +475,917 @@ const gameData = {
 // =============================================================================
 const CORRIDOR_IDS = [
     7, 8, 9, 10, 18, 20, 21, 22, 27, 33, 35, 37, 40, 41, 43 
+];
+
+/* --- MASTER POOL (Base de données de tous les monstres) --- */
+const MASTER_MONSTER_POOL = [
+    // EXEMPLE 1 : UN BOSS (Stats dynamiques selon le HCL)
+    {
+        id: "chef_orc_brutal",
+        name: "Chef Orc Brutal",
+        type: "BOSS", // Boss, Sbire, Vermine, Etrange
+        
+        // Conditions d'apparition (Pour le futur filtre)
+        minHCL: 1, 
+        maxHCL: 5, // N'apparaît plus après le niveau 5 (trop faible)
+
+        // Stats Calculées
+        level: "HCL + 2", // Si HCL 3 -> Niveau 5
+        qty: "1",         // Boss unique
+        life: "HCL + 4",  // Si HCL 3 -> 7 PV
+        attacks: 2,       // 2 Attaques par tour
+        damage: 2,        // 2 Dégâts par coup !
+        
+        // Trésor & Récompenses
+        equipment: "Épée longue, Écu rouillé",
+        treasure: { table: "tresors_boss", rolls: 2 }, // Tire 2 fois sur la table Boss
+        morale: "+1",      // Bonus au jet de moral des sbires
+        xp: "2 Rolls",     // Récompense d'XP
+        
+        // Info Lore
+        habitat: "Donjons, Cavernes",
+        desc: "Une montagne de muscles cicatrisés. Il hurle des ordres incompréhensibles.",
+        
+        // Table de réaction (comme avant)
+        reaction: ["Fuite", "Soudoyer (50po)", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+
+    // EXEMPLE 2 : DES SBIRES (Stats plus simples)
+    {
+        id: "gobelins_fourbes",
+        name: "Gobelins Fourbes",
+        type: "SBIRE",
+        extension: "diaboliques",
+        
+        minHCL: 1, maxHCL: 6,
+
+        level: "HCL",     // Niveau égal au HCL du groupe
+        qty: "d6 + 2",    // Nombre aléatoire
+        life: "1",        // Les sbires ont souvent 1 PV
+        attacks: 1,
+        damage: 1,
+        
+        equipment: "Épée longue, Écu rouillé",
+        treasure: { table: "tresors",  // Nom de la table dans gameData (ex: "tresors", "tresors_epiques")
+        rolls: 2,               // Nombre de jets (informatif pour le joueur)
+        mod: 1      }, // Malus au trésor
+        morale: "-1",     // Lâches
+        xp: "1 Roll",
+        
+        habitat: "Partout",
+        desc: "Ils attaquent en meute et visent les jambes.",
+        reaction: ["Fuite", "Fuite", "Soudoyer (10po)", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "fourmis_gerirere",
+        name: "Fourmis gerirere",
+        type: "VERMINE",
+        
+        minHCL: 1, maxHCL: 99,
+
+        level: "HCL + 6",     // Niveau égal au HCL du groupe
+        qty: "d6 + 3",    // Nombre aléatoire
+        life: "1",        // Les sbires ont souvent 1 PV
+        attacks: 1,
+        damage: 1,
+        
+        equipment: "lance a une main, bouclier",
+        treasure: { table: "tresors",rolls: 1,mod:0},
+        morale: "0",     // Lâches
+        xp: "1/10",
+        
+        habitat: "montagne",
+        desc: "Spray de PhéromonesAvant le contact, les fourmis projettent un liquide acre. Lancez 1d6 pour chaque PJ : sur 1 ou 2, le personnage est aspergé (sans défense possible).Conséquence : La victime, marquée par l'odeur, subit un malus de -1 en Défense contre tout homme-fourmi jusqu'à ce qu'elle soit lavée (immersion dans l'eau) ou purifiée (Bénédiction). Les cibles déjà marquées sont ignorées.",
+        reaction: ["Fuite", "Soudoyer (10po/sbir)", "Soudoyer (10po/sbir)", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "test",
+        name: "test gerirere",
+        type: "BOSS",
+        
+        minHCL: 1, maxHCL: 99,
+
+        level: "HCL + 6",     // Niveau égal au HCL du groupe
+        qty: "d6 + 3",    // Nombre aléatoire
+        life: "1",        // Les sbires ont souvent 1 PV
+        attacks: 1,
+        damage: 1,
+        
+        equipment: "lance a une main, bouclier",
+        treasure: { table: "tresors",rolls: 1,mod:0},
+        morale: "0",     // Lâches
+        xp: "1/10",
+        
+        habitat: "montagne",
+        minions: {
+        pool: "VERMINE",       // Dans quelle catégorie piocher ? (SBIRE, VERMINE, ETRANGE...)
+        qty: "1d6",          // Combien sont-ils ?
+        label: "fourmis_gerirere"  // Nom affiché sur le bouton
+        },
+        desc: "Spray de PhéromonesAvant le contact, les fourmis projettent un liquide acre. Lancez 1d6 pour chaque PJ : sur 1 ou 2, le personnage est aspergé (sans défense possible).Conséquence : La victime, marquée par l'odeur, subit un malus de -1 en Défense contre tout homme-fourmi jusqu'à ce qu'elle soit lavée (immersion dans l'eau) ou purifiée (Bénédiction). Les cibles déjà marquées sont ignorées.",
+        reaction: ["Fuite", "Soudoyer (10po/sbir)", "Soudoyer (10po/sbir)", "Combat", "Combat", "Combat"]
+    },
+        // =========================================================================
+    // 🐀 NUISIBLES / VERMINES (Niveaux Fixes - Ancienne Table)
+    // =========================================================================
+    {
+        id: "vermine_rats_geants",
+        name: "Rats Géants",
+        type: "VERMINE",
+        minHCL: 1, maxHCL: 99,
+
+        level: 1,          // Niveau Fixe
+        qty: "3d6",        // Nombreux
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,    // "Pas de trésor"
+        morale: "Neutre",
+        xp: "Aucun",       // Les vermines ne donnent souvent pas d'XP (règle de base)
+        habitat: "Égouts, Caves",
+        desc: "⚠️ <b>Infection :</b> Tout personnage blessé a 1 chance sur 6 de perdre 1 PV supplémentaire.",
+        reaction: ["Fuite", "Fuite", "Fuite", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "vermine_chauves_souris",
+        name: "Chauves-souris Vampires",
+        type: "VERMINE",
+        minHCL: 1, maxHCL: 99,
+
+        level: 1,
+        qty: "3d6",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Plafonds",
+        desc: "🔊 <b>Cris :</b> Les sorts sont lancés à -1. (Non Morts-vivants).",
+        reaction: ["Fuite", "Fuite", "Fuite", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "vermine_gobelins_colonie",
+        name: "Gobelins de Colonie",
+        type: "VERMINE",   // Classé Vermine car dans ta table Nuisibles
+        minHCL: 1, maxHCL: 99,
+
+        level: 3,          // Niveau Fixe
+        qty: "2d6",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: -1 }, // Trésor -1
+        morale: "-1",      // Moral spécifié
+        xp: "1 Roll",      // Les gobelins donnent généralement de l'XP
+        habitat: "Grottes",
+        desc: "Une petite colonie de pillards.",
+        reaction: ["Fuite", "Fuite", "Fuite", "Soudoyer (5 po/tête)", "Combat", "Combat"]
+    },
+    {
+        id: "vermine_mille_pattes",
+        name: "Mille-pattes Géants",
+        type: "VERMINE",
+        minHCL: 1, maxHCL: 99,
+
+        level: 3,
+        qty: "1d6",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Humide",
+        desc: "☠️ <b>Poison :</b> Si blessé, faire un Jet de Sauvegarde (Niv 2) ou perdre 1 PV supplémentaire.",
+        reaction: ["Fuite", "Fuite", "Fuite", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "vermine_grenouilles",
+        name: "Grenouilles Vampires",
+        type: "VERMINE",
+        minHCL: 1, maxHCL: 99,
+
+        level: 4,
+        qty: "1d6",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: -1 }, // Trésor -1
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Marais",
+        desc: "Des batraciens assoiffés de sang. (Non Morts-vivants).",
+        reaction: ["Fuite", "Combat", "Combat", "Combat", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "vermine_rats_squelettes",
+        name: "Rats Squelettes",
+        type: "VERMINE",
+        minHCL: 1, maxHCL: 99,
+
+        level: 3,
+        qty: "2d6",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,
+        morale: "Sans peur", // Morts-vivants
+        xp: "Aucun",
+        habitat: "Cryptes",
+        desc: "🔨 <b>Armes écrasantes :</b> +1 Attaque.<br>🚫 <b>Arcs/Frondes :</b> Inutiles. (Morts-vivants).",
+        reaction: ["Fuite", "Fuite", "Combat", "Combat", "Combat", "Combat"]
+    },
+        // =========================================================================
+    // 😈 DIABOLIQUES (Tout en VERMINE + Extension activable)
+    // =========================================================================
+    {
+        id: "diab_araignees",
+        name: "Araignées",
+        type: "VERMINE",
+        extension: "diaboliques", // Extension requise
+        minHCL: 1, maxHCL: 99,
+
+        level: 3,
+        qty: "3d6 + 3",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: -1 },
+        morale: "Neutre",
+        xp: "Aucun", // Vermine = Pas d'XP par défaut (ou 1 Roll si tu veux)
+        habitat: "Toiles",
+        desc: "🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV fin combat.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.",
+        reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "diab_stirges",
+        name: "Stirges",
+        type: "VERMINE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+
+        level: 4,
+        qty: "2d6 + 2",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Grottes",
+        desc: "🩸 <b>Succion :</b> Blessure = -1 PV auto chaque tour jusqu'à la mort des stirges.",
+        reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "diab_serpents",
+        name: "Serpents Géants",
+        type: "VERMINE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+
+        level: 5,
+        qty: "1d6 + 4",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Ruines",
+        desc: "🐍 <b>Poison :</b> Blessure = Save Niv 4 ou -1 PV sup.",
+        reaction: ["Pacifique", "Pacifique", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "diab_crapauds",
+        name: "Crapauds Géants",
+        type: "VERMINE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+
+        level: 5,
+        qty: "1d6 + 4",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: null,
+        morale: "Neutre",
+        xp: "Aucun",
+        habitat: "Marais",
+        desc: "💥 <b>Explosion :</b> Tuer au contact = Save Poison Niv 3 ou -1 PV (sauf arc/sort).",
+        reaction: ["Pacifique", "Pacifique", "Pacifique", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "diab_squelettes_armure",
+        name: "Squelettes en Armure",
+        type: "VERMINE", // Demandé en Vermine
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+
+        level: 5,
+        qty: "2d3 + 4",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: -1 },
+        morale: "Sans peur", // Morts-vivants
+        xp: "Aucun",
+        habitat: "Cryptes",
+        desc: "🛡️ <b>Armure :</b> Pas de bonus écrasant. Arc à -1. (Morts-vivants).",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "diab_hommes_boucs",
+        name: "Hommes-Boucs",
+        type: "VERMINE", // Demandé en Vermine
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+
+        level: 6,
+        qty: "2d3 + 1",
+        life: 1,
+        attacks: 1,
+        damage: 1,
+
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "+2", // Moral spécifié
+        xp: "Aucun",
+        habitat: "Montagnes",
+        desc: "🐐 <b>Charge :</b> Niv 8 au 1er tour !",
+        reaction: ["Soudoyer (30 po)", "Combat", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    // =========================================================================
+    // ⚔️ SBIRES (Base & Diaboliques)
+    // =========================================================================
+    
+    // --- BASE ---
+    {
+        id: "sbire_squelettes",
+        name: "Squelettes",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 3,
+        qty: "1d6+2",
+        life: 1, attacks: 1, damage: 1,
+        treasure: null,
+        morale: "Sans peur", // Morts-vivants
+        habitat: "Cryptes",
+        desc: "<b>(Morts-vivants)</b>. Pas de trésor. Pas de moral.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.<br>🏹 <b>Flèches :</b> -1 Attaque.",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "sbire_zombies",
+        name: "Zombies",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 3,
+        qty: "1d6",
+        life: 1, attacks: 1, damage: 1,
+        treasure: null,
+        morale: "Sans peur",
+        habitat: "Cryptes",
+        desc: "<b>(Morts-vivants)</b>. Pas de trésor. Pas de moral.<br>🏹 <b>Flèches :</b> -1 Attaque.",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "sbire_gobelins",
+        name: "Gobelins",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 3,
+        qty: "1d6+3",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: -1 },
+        morale: "-1",
+        habitat: "Grottes",
+        desc: "⚡ <b>Surprise :</b> 1 chance sur 6 d'agir avant le groupe.",
+        reaction: ["Fuite", "Soudoyer (5 po)", "Soudoyer (5 po)", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "sbire_hobgobelins",
+        name: "Hobgobelins",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 4,
+        qty: "1d6",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 1 },
+        morale: "Neutre",
+        habitat: "Donjon",
+        desc: "Militaires organisés.",
+        reaction: ["Fuite", "Soudoyer (10 po)", "Soudoyer (10 po)", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "sbire_orcs",
+        name: "Orcs",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 4,
+        qty: "1d6+1",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Cavernes",
+        desc: "😱 <b>Peur :</b> Test Moral si tué par magie (à -1 si groupe < 50%).<br>🚫 <b>Magie :</b> Pas d'objets magiques (Remplacer par d6 x d6 po).",
+        reaction: ["Soudoyer (10 po)", "Soudoyer (10 po)", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "sbire_trolls",
+        name: "Trolls",
+        type: "SBIRE", // Classé en sbire selon ta liste
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1d3",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Montagnes",
+        desc: "♻️ <b>Régénération :</b> Sauf si tué par sort/acide ou découpé (Action). Sinon revient sur 5-6.",
+        reaction: ["Combat", "Combat", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort (Auto si Nain)"]
+    },
+    {
+        id: "sbire_champignhommes",
+        name: "Champignhommes",
+        type: "SBIRE",
+        minHCL: 1, maxHCL: 99,
+        level: 3,
+        qty: "2d6",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Humide",
+        desc: "🍄 <b>Poison :</b> Dégâts = Save Poison Niv 3 ou -1 PV.<br><i>(Halfelins ajoutent leur niveau).</i>",
+        reaction: ["Soudoyer (d6 po)", "Soudoyer (d6 po)", "Combat", "Combat", "Combat", "Combat"]
+    },
+
+    // --- DIABOLIQUES ---
+    {
+        id: "sbire_diab_pillards_orcs",
+        name: "Pillards Orcs",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1d6+6",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 3, mod: -1 }, // "3 Trésors à -1"
+        morale: "Neutre",
+        habitat: "Ruines",
+        desc: "😱 <b>Peur Magie :</b> Moral si tué par sort (-1 si < 50%).",
+        reaction: ["Soudoyer (40 po)", "Combat", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "sbire_diab_cockatrices",
+        name: "Cockatrices",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1d3+4",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Nids",
+        desc: "🗿 <b>Pétrification :</b> Blessure = Save Niv 2 ou Pétrifié (Soin: Bénédiction).",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "sbire_diab_nains_possedes",
+        name: "Nains Possédés",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1d6+3",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Sans peur",
+        habitat: "Mines",
+        desc: "<b>(Morts-vivants)</b>. 👿 <b>Tenace :</b> Mort sur 1-2. Sur 3-6, attaque encore une fois !",
+        reaction: ["Soudoyer (30 po)", "Soudoyer (30 po)", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "sbire_diab_gnolls",
+        name: "Gnolls",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "2d3+4",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "+1",
+        habitat: "Plaines",
+        desc: "🩸 <b>Frénésie :</b> Niv 7 contre les blessés.",
+        reaction: ["Soudoyer (20 po)", "Soudoyer (20 po)", "Combat", "Combat", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "sbire_diab_maitrelames",
+        name: "Maîtrelames Hobgobelins",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "2d3+2",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 1 },
+        morale: "Neutre",
+        habitat: "Caserne",
+        desc: "⚔️ <b>Contre-attaque :</b> Si vous faites 1 au dé (contact), subissez une attaque bonus.",
+        reaction: ["Soudoyer (30 po)", "Soudoyer (30 po)", "Soudoyer (30 po)", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "sbire_diab_esclavagistes",
+        name: "Esclavagistes du Chaos",
+        type: "SBIRE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 7,
+        qty: "2d3+2",
+        life: 1, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 0 },
+        morale: "+1",
+        habitat: "Prison",
+        desc: "⛓️ <b>Piège :</b> Résolvez un Piège à Ours (Niv 4) avant le combat (sauf errants).",
+        reaction: ["Soudoyer (40 po)", "Soudoyer (40 po)", "Soudoyer (40 po)", "Combat", "Combat", "Combat"]
+    },
+
+    // =========================================================================
+    // 👁️ MONSTRES ÉTRANGES (Base & Diaboliques)
+    // =========================================================================
+    
+    // --- BASE ---
+    {
+        id: "etrange_minotaure",
+        name: "Minotaure",
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 4, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Labyrinthe",
+        desc: "🐂 <b>Charge :</b> Votre 1er jet de Défense est à -1.<br><i>Déteste les Halfelins.</i>",
+        reaction: ["Soudoyer (60 po)", "Soudoyer (60 po)", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "etrange_devoreur_acier",
+        name: "Dévoreur d’acier",
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 3,
+        qty: "1",
+        life: 4, attacks: 3, damage: 0, // Dégâts spéciaux
+        treasure: null,
+        morale: "Neutre",
+        habitat: "Ruines",
+        desc: "🛡️ <b>Mangeur de métal :</b> Ignore Armure Lourde.<br>⚠️ <b>Touche = Détruit objet :</b> Armure ➔ Bouclier ➔ Arme ➔ 3d6 po (Pas de dégâts PV).",
+        reaction: ["Fuite", "Soudoyer (d6 po - Pas d'Or des fous)", "Soudoyer (d6 po)", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_chimere",
+        name: "Chimère",
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 6, attacks: 3, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Montagne",
+        desc: "🔥 <b>Souffle (1-2 sur d6) :</b> Remplace les attaques. Tout le monde fait un Save Feu Niv 4 ou perd 1 PV.",
+        reaction: ["Soudoyer (50 po)", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_catoblepas",
+        name: "Catoblépas",
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 4,
+        qty: "1",
+        life: 4, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 1 },
+        morale: "Neutre",
+        habitat: "Marais",
+        desc: "👁️ <b>Regard (Début du combat) :</b> Tous les persos font un Save Niv 4 ou perdent 1 PV.",
+        reaction: ["Fuite", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_araignee_geante",
+        name: "Araignée géante", // Unique, différente de la vermine
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 3, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 0 },
+        morale: "Neutre",
+        habitat: "Toiles",
+        desc: "🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV sup.",
+        reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_gremlins",
+        name: "Gremlins Invisibles",
+        type: "ETRANGE",
+        minHCL: 1, maxHCL: 99,
+        level: 0, // Spécial
+        qty: "1",
+        life: 99, attacks: 0, damage: 0,
+        treasure: null,
+        morale: "Neutre",
+        habitat: "Partout",
+        desc: "⚠️ <b>VOL :</b> Ils volent <b>d6+3 objets</b> !<br><b>Ordre de vol :</b> Magique ➔ Parchemin ➔ Potion ➔ Arme ➔ Gemme ➔ Pièces (paquet de 10).<br><i>Impossibles à combattre. Pas d'XP.</i><br>(S'ils volent TOUT : Vous gagnez un Indice).",
+        reaction: [] // Pas de réaction standard
+    },
+
+    // --- DIABOLIQUES ---
+    {
+        id: "etrange_diab_doppleganger",
+        name: "Doppleganger",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 5, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Villes",
+        desc: "🎭 <b>Copie :</b> Prend l'apparence d'un PJ.<br>😵 <b>Confusion :</b> Chaque tour, faites un Save Niv 4 pour attaquer.<br><i>Le PJ copié attaque normalement.</i>",
+        reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_diab_manterodeur",
+        name: "Manterôdeur",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 5, attacks: 1, damage: 1,
+        treasure: null,
+        morale: "Neutre",
+        habitat: "Plafond",
+        desc: "👀 <b>Plafond :</b> Repérer sur 1-2 (1-4 si Roublard) = Fuite possible.<br>😱 <b>Embuscade :</b> Save Esquive Niv 3 (-1 Lourde, +1 Elfe/Roub).<br><b>Échec :</b> Paralysé et -1 PV auto chaque tour.",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "etrange_diab_limon_vert",
+        name: "Limon vert",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 8, attacks: 3, damage: 1,
+        treasure: null,
+        morale: "Sans peur",
+        habitat: "Humide",
+        desc: "🤢 <b>Maladie :</b> Touche = Save Maladie Niv 4 (Halfelin +½).<br><b>Effet :</b> Chaque fois que vous perdez 1 PV, perdez-en un autre.<br><i>Soin : Bénédiction. Mort = Devient Limon.</i>",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "etrange_diab_cube_acide",
+        name: "Cube acide",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 6, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 3, mod: 0 },
+        morale: "Sans peur",
+        habitat: "Couloirs",
+        desc: "🧊 <b>Transparent :</b> Attaque en 1er sur 1-3.<br>📦 <b>Engloutissement :</b> Save Niv 2 (Niv 4 si attaqué au CàC) ou paralysé.<br>🚫 <b>Immune :</b> Sommeil, Éclair. Pas de bonus Roublard.",
+        reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "etrange_diab_golem_chair",
+        name: "Golem de chair",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 7,
+        qty: "1",
+        life: 8, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "+2",
+        habitat: "Labo",
+        desc: "🛡️ <b>Immune :</b> Écrasant et Sorts (Sauf Boule de Feu).<br>💥 <b>Brutal :</b> Si vous faites 1 en Défense = 2 Dégâts.",
+        reaction: ["Pacifique", "Pacifique", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "etrange_diab_monstre_cimeterres",
+        name: "Monstre aux cimeterres",
+        type: "ETRANGE",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 8,
+        qty: "1",
+        life: 12, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 1 },
+        morale: "Neutre",
+        habitat: "Arène",
+        desc: "⚔️ <b>Lames :</b> Bras-cimeterres.<br>🚫 <b>Immune :</b> Sommeil.<br><i>Si Nain dans le groupe : Combat à mort.</i>",
+        reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Combat", "Combat", "Combat à mort", "Combat à mort"]
+    },
+
+    // =========================================================================
+    // 💀 BOSS (Base & Diaboliques)
+    // =========================================================================
+    
+    // --- BASE ---
+    {
+        id: "boss_momie",
+        name: "Momie",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 4, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 2 },
+        morale: "Sans peur",
+        habitat: "Tombeau",
+        desc: "<b>(Mort-vivant)</b>.<br>☣️ <b>Malédiction :</b> Si tué par Momie, le perso devient Momie.<br>🔥 <b>Boule de feu :</b> Attaque à +2 contre elle.",
+        reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "boss_brute_orque",
+        name: "Brute Orque",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 5, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 1 },
+        morale: "Neutre",
+        habitat: "Cavernes",
+        desc: "🚫 <b>Pas d'objets magiques :</b> Si le trésor indique un objet magique, remplacez par <b>2d6 x d6 po</b>.",
+        reaction: ["Soudoyer (50 po)", "Combat", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "boss_ogre",
+        name: "Ogre",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 5,
+        qty: "1",
+        life: 6, attacks: 1, damage: 2, // Brutal
+        treasure: { table: "tresors", rolls: 1, mod: 0 },
+        morale: "Neutre",
+        habitat: "Grottes",
+        desc: "💢 <b>Brutal :</b> Inflige <b>2 Dégâts</b> par coup !",
+        reaction: ["Soudoyer (30 po)", "Combat", "Combat", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "boss_meduse",
+        name: "Méduse",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 4,
+        qty: "1",
+        life: 4, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 1, mod: 1 },
+        morale: "Neutre",
+        habitat: "Ruines",
+        desc: "🗿 <b>Regard (Début combat) :</b> Save Niv 4 ou <b>Pétrifié</b> (Hors-jeu).<br><i>(Roublards +½ niv. Soin : Bénédiction).</i>",
+        reaction: ["Soudoyer (6d6 po)", "Quête", "Combat", "Combat", "Combat", "Combat à mort"]
+    },
+    {
+        id: "boss_seigneur_chaos_base",
+        name: "Seigneur du Chaos",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 4, attacks: 3, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 1 },
+        morale: "Neutre",
+        habitat: "Temple",
+        desc: "🎲 <b>Mort du Boss :</b> Sur 5-6 au d6, trouvez un Indice.",
+        specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" },
+        reaction: ["Fuite", "Combat", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "boss_petit_dragon",
+        name: "Petit Dragon",
+        type: "BOSS",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 5, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 3, mod: 1 },
+        morale: "Neutre",
+        habitat: "Antre",
+        desc: "🔥 <b>Chaque tour (1-2 sur d6) :</b> Souffle ! (Save Niv 6 ou 1 Dégât).<br>🦷 <b>Sinon :</b> 2 Attaques (Morsures).",
+        reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (100+ po)", "Soudoyer (100+ po)", "Combat", "Combat", "Quête"]
+    },
+
+    // --- DIABOLIQUES ---
+    {
+        id: "boss_diab_seigneur_chaos",
+        name: "Seigneur du Chaos (Diabolique)",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 6,
+        qty: "1",
+        life: 7, attacks: 3, damage: 1,
+        treasure: { table: "tresors", rolls: 3, mod: 0 },
+        morale: "Neutre",
+        habitat: "Temple",
+        desc: "⚡ <b>Pouvoirs :</b> (1-4 Œil, 5 Drain, 6 Flammes).<br>⛓️ <b>Esclaves :</b> Libérés a la fin du combat = Indice mais jet Monstres Errants.",
+        specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" },
+        reaction: ["Soudoyer (200 po)", "Soudoyer (200 po)", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "boss_diab_demon_squelette",
+        name: "Démon Squelette",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 7,
+        qty: "1",
+        life: 8, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 3, mod: 0 },
+        morale: "+1",
+        habitat: "Enfers",
+        desc: "<b>(Mort-vivant)</b>.<br>🩸 <b>Sang Maudit :</b> Chaque fois que VOUS êtes blessé, un Squelette apparaît !",
+        specialAction: { label: "💀 Sang : Invoquer Squelette", table: "invocation_squelette_armure" },
+        reaction: ["Défi magique", "Défi magique", "Combat", "Combat", "Combat", "Quête"]
+    },
+    {
+        id: "boss_diab_commandant_hob",
+        name: "Commandant Hobgobelin",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 7,
+        qty: "1",
+        life: 8, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 0 },
+        morale: "Neutre",
+        habitat: "QG",
+        desc: "⚔️ <b>Lame Vibrante :</b> À chaque attaque du Boss, 3 chances sur 6 que des Maîtrelames arrivent.",
+        specialAction: { label: "⚔️ Appel : Invoquer Maîtrelames", table: "invocation_maitrelame" },
+        reaction: ["Soudoyer (400 po)", "Soudoyer (400 po)", "Soudoyer (400 po)", "Combat à mort", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "boss_diab_apparition",
+        name: "Apparition",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 7,
+        qty: "1",
+        life: 6, attacks: 1, damage: 1,
+        treasure: { table: "tresors", rolls: 2, mod: 0 },
+        morale: "Neutre",
+        habitat: "Ruines",
+        desc: "<b>(Mort-vivant)</b>. 🕯️ <b>Noir (2/6) :</b> Lanternes éteintes.<br>😱 <b>Touche :</b> Save Magie Niv 4 ou Perte 1 Niveau.<br>🛡️ <b>Immunité :</b> Armes magiques/argent/feu/eau bénite seulement.",
+        reaction: ["Soudoyer (Objet Magique)", "Soudoyer (Objet Magique)", "Quête", "Combat", "Combat", "Combat"]
+    },
+    {
+        id: "boss_diab_troll_massif",
+        name: "Troll Massif",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 8,
+        qty: "1",
+        life: 7, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 4, mod: 0 },
+        morale: "Neutre",
+        habitat: "Cavernes",
+        desc: "🔨 <b>Résistant :</b> Écrasant à -1.<br>♻️ <b>Régénération :</b> 1 PV/tour (Sauf feu/acide/découpe).",
+        reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Combat à mort", "Combat à mort"]
+    },
+    {
+        id: "boss_diab_jeune_dragon_rouge",
+        name: "Jeune Dragon Rouge",
+        type: "BOSS",
+        extension: "diaboliques",
+        minHCL: 1, maxHCL: 99,
+        level: 9,
+        qty: "1",
+        life: 8, attacks: 2, damage: 1,
+        treasure: { table: "tresors", rolls: 4, mod: 1 },
+        morale: "Neutre",
+        habitat: "Montagne",
+        desc: "🔥 <b>1er Tour :</b> Souffle Feu (Save Niv 7 ou d3 Dégâts).<br>Ensuite : 2 Attaques.",
+        reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (300 po)", "Soudoyer (300 po)", "Combat", "Combat", "Quête"]
+    },
 ];

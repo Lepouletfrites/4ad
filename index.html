@@ -16,7 +16,21 @@
     <div class="container">
         <button id="new-tile-btn" onclick="drawNewTile()">🏰 TIRER UNE NOUVELLE PIÈCE (Visuel)</button>
 
-        <div id="buttons-container" class="grid-menu"></div>
+      <div class="tab-navigation">
+          <button class="tab-btn active" onclick="switchTab('generator')">🎲 Générateur</button>
+          <button class="tab-btn" onclick="switchTab('bestiary')">📖 Bestiaire Actif</button>
+      </div>
+      
+      <div id="tab-generator" class="tab-content active">
+          <div id="buttons-container">
+              </div>
+      </div>
+      
+      <div id="tab-bestiary" class="tab-content" style="display:none;">
+          <div id="bestiary-list" class="bestiary-container">
+              </div>
+      </div>
+
     </div>
 
     <div id="result-modal" class="modal">
