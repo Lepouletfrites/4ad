@@ -601,7 +601,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: null,    // "Pas de trésor"
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",       // Les vermines ne donnent souvent pas d'XP (règle de base)
         habitat: "Égouts, Caves",
         desc: "⚠️ <b>Infection :</b> Tout personnage blessé a 1 chance sur 6 de perdre 1 PV supplémentaire.",
@@ -620,7 +620,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Plafonds",
         desc: "🔊 <b>Cris :</b> Les sorts sont lancés à -1. (Non Morts-vivants).",
@@ -658,7 +658,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Humide",
         desc: "☠️ <b>Poison :</b> Si blessé, faire un Jet de Sauvegarde (Niv 2) ou perdre 1 PV supplémentaire.",
@@ -677,7 +677,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: { table: "tresors", rolls: 1, mod: -1 }, // Trésor -1
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Marais",
         desc: "Des batraciens assoiffés de sang. (Non Morts-vivants).",
@@ -719,7 +719,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: { table: "tresors", rolls: 1, mod: -1 },
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun", // Vermine = Pas d'XP par défaut (ou 1 Roll si tu veux)
         habitat: "Toiles",
         desc: "🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV fin combat.<br>🔨 <b>Armes écrasantes :</b> +1 Attaque.",
@@ -739,7 +739,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Grottes",
         desc: "🩸 <b>Succion :</b> Blessure = -1 PV auto chaque tour jusqu'à la mort des stirges.",
@@ -759,7 +759,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Ruines",
         desc: "🐍 <b>Poison :</b> Blessure = Save Niv 4 ou -1 PV sup.",
@@ -779,7 +779,7 @@ const MASTER_MONSTER_POOL = [
         damage: 1,
 
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         xp: "Aucun",
         habitat: "Marais",
         desc: "💥 <b>Explosion :</b> Tuer au contact = Save Poison Niv 3 ou -1 PV (sauf arc/sort).",
@@ -867,7 +867,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d6+3",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: -1 },
-        morale: "-1",
+        morale: -1,
         habitat: "Grottes",
         desc: "⚡ <b>Surprise :</b> 1 chance sur 6 d'agir avant le groupe.",
         reaction: ["Fuite", "Soudoyer (5 po)", "Soudoyer (5 po)", "Combat", "Combat", "Combat"]
@@ -881,7 +881,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d6",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Donjon",
         desc: "Militaires organisés.",
         reaction: ["Fuite", "Soudoyer (10 po)", "Soudoyer (10 po)", "Combat", "Combat", "Combat à mort"]
@@ -895,7 +895,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d6+1",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Cavernes",
         desc: "😱 <b>Peur :</b> Test Moral si tué par magie (à -1 si groupe < 50%).<br>🚫 <b>Magie :</b> Pas d'objets magiques (Remplacer par d6 x d6 po).",
         reaction: ["Soudoyer (10 po)", "Soudoyer (10 po)", "Combat", "Combat", "Combat", "Combat à mort"]
@@ -909,7 +909,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d3",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Montagnes",
         desc: "♻️ <b>Régénération :</b> Sauf si tué par sort/acide ou découpé (Action). Sinon revient sur 5-6.",
         reaction: ["Combat", "Combat", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort (Auto si Nain)"]
@@ -923,7 +923,7 @@ const MASTER_MONSTER_POOL = [
         qty: "2d6",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Humide",
         desc: "🍄 <b>Poison :</b> Dégâts = Save Poison Niv 3 ou -1 PV.<br><i>(Halfelins ajoutent leur niveau).</i>",
         reaction: ["Soudoyer (d6 po)", "Soudoyer (d6 po)", "Combat", "Combat", "Combat", "Combat"]
@@ -940,7 +940,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d6+6",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 3, mod: -1 }, // "3 Trésors à -1"
-        morale: "Neutre",
+        morale: 0,
         habitat: "Ruines",
         desc: "😱 <b>Peur Magie :</b> Moral si tué par sort (-1 si < 50%).",
         reaction: ["Soudoyer (40 po)", "Combat", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
@@ -955,7 +955,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1d3+4",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Nids",
         desc: "🗿 <b>Pétrification :</b> Blessure = Save Niv 2 ou Pétrifié (Soin: Bénédiction).",
         reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
@@ -985,7 +985,7 @@ const MASTER_MONSTER_POOL = [
         qty: "2d3+4",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "+1",
+        morale: 1,
         habitat: "Plaines",
         desc: "🩸 <b>Frénésie :</b> Niv 7 contre les blessés.",
         reaction: ["Soudoyer (20 po)", "Soudoyer (20 po)", "Combat", "Combat", "Combat à mort", "Combat à mort"]
@@ -1000,7 +1000,7 @@ const MASTER_MONSTER_POOL = [
         qty: "2d3+2",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Caserne",
         desc: "⚔️ <b>Contre-attaque :</b> Si vous faites 1 au dé (contact), subissez une attaque bonus.",
         reaction: ["Soudoyer (30 po)", "Soudoyer (30 po)", "Soudoyer (30 po)", "Combat", "Combat", "Combat à mort"]
@@ -1015,7 +1015,7 @@ const MASTER_MONSTER_POOL = [
         qty: "2d3+2",
         life: 1, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 0 },
-        morale: "+1",
+        morale: +1,
         habitat: "Prison",
         desc: "⛓️ <b>Piège :</b> Résolvez un Piège à Ours (Niv 4) avant le combat (sauf errants).",
         reaction: ["Soudoyer (40 po)", "Soudoyer (40 po)", "Soudoyer (40 po)", "Combat", "Combat", "Combat"]
@@ -1035,7 +1035,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 4, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Labyrinthe",
         desc: "🐂 <b>Charge :</b> Votre 1er jet de Défense est à -1.<br><i>Déteste les Halfelins.</i>",
         reaction: ["Soudoyer (60 po)", "Soudoyer (60 po)", "Combat", "Combat", "Combat", "Combat à mort"]
@@ -1049,7 +1049,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 4, attacks: 3, damage: 0, // Dégâts spéciaux
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         habitat: "Ruines",
         desc: "🛡️ <b>Mangeur de métal :</b> Ignore Armure Lourde.<br>⚠️ <b>Touche = Détruit objet :</b> Armure ➔ Bouclier ➔ Arme ➔ 3d6 po (Pas de dégâts PV).",
         reaction: ["Fuite", "Soudoyer (d6 po - Pas d'Or des fous)", "Soudoyer (d6 po)", "Combat", "Combat", "Combat"]
@@ -1063,7 +1063,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 6, attacks: 3, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Montagne",
         desc: "🔥 <b>Souffle (1-2 sur d6) :</b> Remplace les attaques. Tout le monde fait un Save Feu Niv 4 ou perd 1 PV.",
         reaction: ["Soudoyer (50 po)", "Combat", "Combat", "Combat", "Combat", "Combat"]
@@ -1077,7 +1077,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 4, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Marais",
         desc: "👁️ <b>Regard (Début du combat) :</b> Tous les persos font un Save Niv 4 ou perdent 1 PV.",
         reaction: ["Fuite", "Combat", "Combat", "Combat", "Combat", "Combat"]
@@ -1091,7 +1091,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 3, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Toiles",
         desc: "🕸️ <b>Toiles :</b> Fuite impossible (sauf Boule de feu).<br>☠️ <b>Poison :</b> Blessure = Save Niv 3 ou -1 PV sup.",
         reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
@@ -1105,7 +1105,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 99, attacks: 0, damage: 0,
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         habitat: "Partout",
         desc: "⚠️ <b>VOL :</b> Ils volent <b>d6+3 objets</b> !<br><b>Ordre de vol :</b> Magique ➔ Parchemin ➔ Potion ➔ Arme ➔ Gemme ➔ Pièces (paquet de 10).<br><i>Impossibles à combattre. Pas d'XP.</i><br>(S'ils volent TOUT : Vous gagnez un Indice).",
         reaction: [] // Pas de réaction standard
@@ -1122,7 +1122,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 5, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Villes",
         desc: "🎭 <b>Copie :</b> Prend l'apparence d'un PJ.<br>😵 <b>Confusion :</b> Chaque tour, faites un Save Niv 4 pour attaquer.<br><i>Le PJ copié attaque normalement.</i>",
         reaction: ["Combat", "Combat", "Combat", "Combat", "Combat", "Combat"]
@@ -1137,7 +1137,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 5, attacks: 1, damage: 1,
         treasure: null,
-        morale: "Neutre",
+        morale: 0,
         habitat: "Plafond",
         desc: "👀 <b>Plafond :</b> Repérer sur 1-2 (1-4 si Roublard) = Fuite possible.<br>😱 <b>Embuscade :</b> Save Esquive Niv 3 (-1 Lourde, +1 Elfe/Roub).<br><b>Échec :</b> Paralysé et -1 PV auto chaque tour.",
         reaction: ["Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort", "Combat à mort"]
@@ -1182,7 +1182,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 8, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "+2",
+        morale: 2,
         habitat: "Labo",
         desc: "🛡️ <b>Immune :</b> Écrasant et Sorts (Sauf Boule de Feu).<br>💥 <b>Brutal :</b> Si vous faites 1 en Défense = 2 Dégâts.",
         reaction: ["Pacifique", "Pacifique", "Combat", "Combat", "Combat", "Combat"]
@@ -1197,7 +1197,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 12, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Arène",
         desc: "⚔️ <b>Lames :</b> Bras-cimeterres.<br>🚫 <b>Immune :</b> Sommeil.<br><i>Si Nain dans le groupe : Combat à mort.</i>",
         reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Combat", "Combat", "Combat à mort", "Combat à mort"]
@@ -1231,7 +1231,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 5, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Cavernes",
         desc: "🚫 <b>Pas d'objets magiques :</b> Si le trésor indique un objet magique, remplacez par <b>2d6 x d6 po</b>.",
         reaction: ["Soudoyer (50 po)", "Combat", "Combat", "Combat", "Combat", "Combat à mort"]
@@ -1245,7 +1245,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 6, attacks: 1, damage: 2, // Brutal
         treasure: { table: "tresors", rolls: 1, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Grottes",
         desc: "💢 <b>Brutal :</b> Inflige <b>2 Dégâts</b> par coup !",
         reaction: ["Soudoyer (30 po)", "Combat", "Combat", "Combat à mort", "Combat à mort", "Combat à mort"]
@@ -1259,7 +1259,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 4, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 1, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Ruines",
         desc: "🗿 <b>Regard (Début combat) :</b> Save Niv 4 ou <b>Pétrifié</b> (Hors-jeu).<br><i>(Roublards +½ niv. Soin : Bénédiction).</i>",
         reaction: ["Soudoyer (6d6 po)", "Quête", "Combat", "Combat", "Combat", "Combat à mort"]
@@ -1273,7 +1273,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 4, attacks: 3, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Temple",
         desc: "🎲 <b>Mort du Boss :</b> Sur 5-6 au d6, trouvez un Indice.",
         specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" },
@@ -1288,7 +1288,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 5, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 3, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Antre",
         desc: "🔥 <b>Chaque tour (1-2 sur d6) :</b> Souffle ! (Save Niv 6 ou 1 Dégât).<br>🦷 <b>Sinon :</b> 2 Attaques (Morsures).",
         reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (100+ po)", "Soudoyer (100+ po)", "Combat", "Combat", "Quête"]
@@ -1305,7 +1305,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 7, attacks: 3, damage: 1,
         treasure: { table: "tresors", rolls: 3, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Temple",
         desc: "⚡ <b>Pouvoirs :</b> (1-4 Œil, 5 Drain, 6 Flammes).<br>⛓️ <b>Esclaves :</b> Libérés a la fin du combat = Indice mais jet Monstres Errants.",
         specialAction: { label: "⚡ Déterminer Pouvoir (d6)", table: "pouvoirs_chaos" },
@@ -1321,7 +1321,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 8, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 3, mod: 0 },
-        morale: "+1",
+        morale: 1,
         habitat: "Enfers",
         desc: "<b>(Mort-vivant)</b>.<br>🩸 <b>Sang Maudit :</b> Chaque fois que VOUS êtes blessé, un Squelette apparaît !",
         specialAction: { label: "💀 Sang : Invoquer Squelette", table: "invocation_squelette_armure" },
@@ -1337,7 +1337,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 8, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "QG",
         desc: "⚔️ <b>Lame Vibrante :</b> À chaque attaque du Boss, 3 chances sur 6 que des Maîtrelames arrivent.",
         specialAction: { label: "⚔️ Appel : Invoquer Maîtrelames", table: "invocation_maitrelame" },
@@ -1353,7 +1353,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 6, attacks: 1, damage: 1,
         treasure: { table: "tresors", rolls: 2, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Ruines",
         desc: "<b>(Mort-vivant)</b>. 🕯️ <b>Noir (2/6) :</b> Lanternes éteintes.<br>😱 <b>Touche :</b> Save Magie Niv 4 ou Perte 1 Niveau.<br>🛡️ <b>Immunité :</b> Armes magiques/argent/feu/eau bénite seulement.",
         reaction: ["Soudoyer (Objet Magique)", "Soudoyer (Objet Magique)", "Quête", "Combat", "Combat", "Combat"]
@@ -1368,7 +1368,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 7, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 4, mod: 0 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Cavernes",
         desc: "🔨 <b>Résistant :</b> Écrasant à -1.<br>♻️ <b>Régénération :</b> 1 PV/tour (Sauf feu/acide/découpe).",
         reaction: ["Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Soudoyer (250 po)", "Combat à mort", "Combat à mort"]
@@ -1383,7 +1383,7 @@ const MASTER_MONSTER_POOL = [
         qty: "1",
         life: 8, attacks: 2, damage: 1,
         treasure: { table: "tresors", rolls: 4, mod: 1 },
-        morale: "Neutre",
+        morale: 0,
         habitat: "Montagne",
         desc: "🔥 <b>1er Tour :</b> Souffle Feu (Save Niv 7 ou d3 Dégâts).<br>Ensuite : 2 Attaques.",
         reaction: ["Endormi (+2 à votre 1ère attaque)", "Soudoyer (300 po)", "Soudoyer (300 po)", "Combat", "Combat", "Quête"]

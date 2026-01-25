@@ -449,6 +449,40 @@ h1 {
     border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;
     margin-top: 15px; cursor: pointer;
 }
+/* --- BARRE DE DÉS RAPIDES (Mise à jour pour 5 dés) --- */
+.dice-toolbar {
+    grid-column: span 2;
+    display: flex;
+    gap: 8px; /* Un peu moins d'espace pour que ça rentre */
+    margin-bottom: 10px;
+    flex-wrap: wrap; /* Permet de passer à la ligne sur très petits écrans */
+}
+
+.quick-dice-btn {
+    flex: 1; /* Partage l'espace équitablement */
+    min-width: 50px; /* Taille minimum pour le doigt */
+    border: none;
+    padding: 12px 5px; /* Moins de padding sur les côtés */
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    font-weight: bold;
+    transition: transform 0.1s;
+}
+
+.quick-dice-btn:active {
+    transform: translateY(2px);
+    border-bottom-width: 0;
+}
+
+/* COULEURS DES DÉS */
+.d6-btn  { background: linear-gradient(135deg, #e67e22, #d35400); border-bottom: 3px solid #a04000; } /* Orange */
+.d8-btn  { background: linear-gradient(135deg, #9b59b6, #8e44ad); border-bottom: 3px solid #6c3483; } /* Violet */
+.d10-btn { background: linear-gradient(135deg, #3498db, #2980b9); border-bottom: 3px solid #1a5276; } /* Bleu */
+.d12-btn { background: linear-gradient(135deg, #2ecc71, #27ae60); border-bottom: 3px solid #196f3d; } /* Vert */
+.d20-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); border-bottom: 3px solid #922b21; } /* Rouge */
 
 /* --- ANIMATIONS --- */
 @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }

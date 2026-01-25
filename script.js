@@ -1,4 +1,4 @@
-/* script.js - Version ULTIME : Extensions, Bridage de Niveau & Trésors Récursifs */
+/* script.js - Version avec Barre de Dés Complète (d6, d8, d10, d12, d20) */
 
 // --- VARIABLES GLOBALES ---
 let currentMonster = null;
@@ -17,35 +17,63 @@ let activePools = {
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings(); 
     createInterface();
+    switchTab('generator'); 
     
+    // Fermeture modal au clic extérieur
     window.onclick = (event) => {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = "none";
         }
     }
+
+    // Fermeture avec la croix
+    const closeButtons = document.querySelectorAll(".close-btn");
+    closeButtons.forEach(btn => {
+        btn.onclick = function() {
+            const modal = btn.closest(".modal");
+            if (modal) modal.style.display = "none";
+        }
+    });
 });
 
-// --- INTERFACE PRINCIPALE ---
+// --- GESTION DES ONGLETS ---
+function switchTab(tabName) {
+    document.getElementById("tab-generator").style.display = "none";
+    document.getElementById("tab-bestiary").style.display = "none";
+    
+    const buttons = document.querySelectorAll(".tab-btn");
+    buttons.forEach(btn => btn.classList.remove("active"));
+    
+    if (tabName === 'generator') {
+        document.getElementById("tab-generator").style.display = "block";
+        buttons[0].classList.add("active");
+    } else {
+        document.getElementById("tab-bestiary").style.display = "block";
+        buttons[1].classList.add("active");
+        renderBestiary(); 
+    }
+}
+
+// --- INTERFACE PRINCIPALE (Modifiée pour les Dés) ---
 function createInterface() {
     const container = document.getElementById("buttons-container");
     container.innerHTML = ""; 
 
-    // 1. Dés rapides
+    // 1. Barre de Dés Complète
     const toolBar = document.createElement("div");
     toolBar.className = "dice-toolbar"; 
     
-    const btnD6 = document.createElement("button");
-    btnD6.innerHTML = "🎲 <b>D6</b>";
-    btnD6.className = "quick-dice-btn d6-btn";
-    btnD6.onclick = () => showQuickDice(6);
-    
-    const btnD8 = document.createElement("button");
-    btnD8.innerHTML = "🎲 <b>D8</b>";
-    btnD8.className = "quick-dice-btn d8-btn";
-    btnD8.onclick = () => showQuickDice(8);
+    // Liste des dés à afficher
+    const diceTypes = [6, 8, 10, 12, 20];
 
-    toolBar.appendChild(btnD6);
-    toolBar.appendChild(btnD8);
+    diceTypes.forEach(faces => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `<b>D${faces}</b>`;
+        btn.className = `quick-dice-btn d${faces}-btn`;
+        btn.onclick = () => showQuickDice(faces);
+        toolBar.appendChild(btn);
+    });
+
     container.appendChild(toolBar);
 
     // 2. Boutons des Tables
@@ -53,7 +81,7 @@ function createInterface() {
         if (gameData[key].hidden) continue; 
 
         const btn = document.createElement("button");
-        btn.textContent = gameData[key].label;
+        btn.innerHTML = gameData[key].label; 
         btn.className = "table-btn";
         
         if (gameData[key].specialType === "entrance_visual") {
@@ -66,7 +94,6 @@ function createInterface() {
 }
 
 // --- RÉGLAGES ---
-
 function openSettings() {
     const list = document.getElementById("extensions-list");
     list.innerHTML = "";
@@ -82,7 +109,11 @@ function openSettings() {
         const btn = document.createElement("button");
         btn.innerHTML = `d${faces}`;
         btn.className = `die-select-btn ${currentGlobalDie === faces ? 'active' : ''}`;
-        btn.onclick = () => { currentGlobalDie = faces; saveSettings(); openSettings(); };
+        btn.onclick = () => { 
+            currentGlobalDie = faces; 
+            saveSettings(false); 
+            openSettings(); 
+        };
         dieContainer.appendChild(btn);
     });
     dieSection.appendChild(dieContainer);
@@ -106,7 +137,7 @@ function openSettings() {
     hclInput.style.width = "80px";
     hclInput.style.textAlign = "center";
     hclInput.style.borderRadius = "8px";
-    hclInput.onchange = () => saveSettings(); 
+    hclInput.onchange = () => saveSettings(false); 
 
     hclSection.appendChild(hclInput);
     list.appendChild(hclSection);
@@ -129,7 +160,7 @@ function openSettings() {
             } else {
                 activeExtensions = activeExtensions.filter(id => id !== ext.id);
             }
-            saveSettings();
+            saveSettings(false);
         };
         const label = document.createElement("label");
         label.htmlFor = "ext-" + ext.id;
@@ -143,15 +174,20 @@ function openSettings() {
     document.getElementById("settings-modal").style.display = "block";
 }
 
-function saveSettings() {
+function saveSettings(closeModal = true) {
     localStorage.setItem("4ad_global_die", currentGlobalDie.toString());
     localStorage.setItem("4ad_extensions", JSON.stringify(activeExtensions));
     
     const hclInput = document.getElementById("setting-hcl");
-    const hclVal = hclInput ? hclInput.value : (localStorage.getItem("4ad_hcl") || 1);
-    localStorage.setItem("4ad_hcl", hclVal);
+    if (hclInput) {
+        localStorage.setItem("4ad_hcl", hclInput.value);
+    }
 
     generateMonsterPools(); 
+
+    if (closeModal) {
+        document.getElementById("settings-modal").style.display = "none";
+    }
 }
 
 function loadSettings() {
@@ -164,7 +200,7 @@ function loadSettings() {
     generateMonsterPools();
 }
 
-// --- CALCULATEUR DE NIVEAU BRIDÉ ---
+// --- LOGIQUE MONSTRES ---
 function calculateMonsterLevel(monster, currentHCL) {
     let rawLevel = resolveFormula(monster.level || "HCL", currentHCL);
     if (monster.minHCL !== undefined && rawLevel < monster.minHCL) rawLevel = monster.minHCL;
@@ -172,83 +208,94 @@ function calculateMonsterLevel(monster, currentHCL) {
     return rawLevel;
 }
 
-// --- GÉNÉRATION INTELLIGENTE DES POOLS ---
-
 function generateMonsterPools() {
     activePools = { BOSS: [], SBIRE: [], VERMINE: [], ETRANGE: [] };
-    
     const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
-    const maxDieScore = currentGlobalDie; // ex: 6
+    const maxDieScore = currentGlobalDie; 
 
     if (typeof MASTER_MONSTER_POOL !== 'undefined') {
         MASTER_MONSTER_POOL.forEach(monster => {
-            
-            // A. FILTRE EXTENSION (NOUVEAU !)
-            // Si le monstre appartient à une extension et que celle-ci n'est pas active, on zappe.
-            if (monster.extension && !activeExtensions.includes(monster.extension)) {
-                return; 
-            }
-
-            // B. CALCUL DU NIVEAU RÉEL (AVEC BRIDAGE)
+            if (monster.extension && !activeExtensions.includes(monster.extension)) return; 
             const realLevel = calculateMonsterLevel(monster, currentHCL);
-
-            // C. SÉCURITÉ DE JEU (Game Design)
-            // Max Possible = HCL + Dé - 1
             const maxBeatableLevel = currentHCL + maxDieScore - 1;
-
-            if (realLevel > maxBeatableLevel) {
-                return; // Trop fort
-            }
-
-            // D. AJOUT
-            if (activePools[monster.type]) {
-                activePools[monster.type].push(monster);
-            }
+            if (realLevel > maxBeatableLevel) return; 
+            if (activePools[monster.type]) activePools[monster.type].push(monster);
         });
     }
+}
+
+// --- BESTIAIRE ---
+function renderBestiary() {
+    const container = document.getElementById("bestiary-list");
+    container.innerHTML = "";
+    const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
     
-    console.log(`Pools générées (HCL:${currentHCL}, Ext:${activeExtensions.length})`, activePools);
+    const typesOrder = ["BOSS", "SBIRE", "VERMINE", "ETRANGE"];
+    const titles = { "BOSS": "💀 Boss", "SBIRE": "⚔️ Sbires", "VERMINE": "🐀 Nuisibles", "ETRANGE": "👁️ Étranges" };
+
+    let foundAny = false;
+
+    typesOrder.forEach(type => {
+        const pool = activePools[type];
+        if (pool && pool.length > 0) {
+            foundAny = true;
+            const section = document.createElement("div");
+            section.className = "bestiary-section";
+            
+            const title = document.createElement("h3");
+            title.className = "bestiary-title";
+            title.innerText = `${titles[type]} (${pool.length})`;
+            section.appendChild(title);
+            
+            pool.forEach(monster => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "bestiary-item";
+                const lvl = calculateMonsterLevel(monster, currentHCL);
+                itemDiv.innerHTML = `<span>${monster.name}</span><span class="mon-lvl-badge">Niv ${lvl}</span>`;
+                itemDiv.onclick = () => displayMonster(monster);
+                section.appendChild(itemDiv);
+            });
+            container.appendChild(section);
+        }
+    });
+
+    if (!foundAny) {
+        container.innerHTML = "<div style='text-align:center; color:#777; padding:20px;'>Aucun monstre trouvé.</div>";
+    }
 }
 
 // --- TIRAGE ALÉATOIRE ---
-
 function pickRandomItem(key, forcedIndex = null) {
     resetModal();
 
-    // A. DEMANDE DE MONSTRE (POOLS)
-    const categoryMap = {
-        "boss": "BOSS",
-        "sbires": "SBIRE",
-        "nuisibles": "VERMINE",
-        "monstres_etranges": "ETRANGE"
-    };
-
+    const categoryMap = { "boss": "BOSS", "sbires": "SBIRE", "nuisibles": "VERMINE", "monstres_etranges": "ETRANGE" };
     if (categoryMap[key]) {
         const poolType = categoryMap[key];
         const pool = activePools[poolType];
-
         if (!pool || pool.length === 0) {
             alert(`Aucun monstre '${poolType}' disponible (HCL: ${localStorage.getItem("4ad_hcl")}). Vérifiez vos extensions !`);
             return;
         }
-
         const monster = pool[getRandomInt(0, pool.length - 1)];
         displayMonster(monster);
         return; 
     }
 
-    // B. TABLE CLASSIQUE
     const tableInfo = gameData[key];
     if (!tableInfo) return;
 
     let chosenSourceKey = "base";
     let sourceNameDisplay = "";
     if (tableInfo.sources) {
-        const possibleSources = activeExtensions.filter(extId => tableInfo.sources[extId]);
+        const possibleSources = Object.keys(tableInfo.sources).filter(srcKey => {
+            return srcKey === "base" || activeExtensions.includes(srcKey);
+        });
         if (possibleSources.length > 0) {
             chosenSourceKey = possibleSources[getRandomInt(0, possibleSources.length - 1)];
-            const extObj = AVAILABLE_EXTENSIONS.find(e => e.id === chosenSourceKey);
-            if (extObj && chosenSourceKey !== "base") sourceNameDisplay = `Source : ${extObj.name}`;
+            if (chosenSourceKey !== "base") {
+                const extObj = AVAILABLE_EXTENSIONS.find(e => e.id === chosenSourceKey);
+                sourceNameDisplay = extObj ? `Source : ${extObj.name}` : "";
+            }
         }
     }
     
@@ -257,19 +304,14 @@ function pickRandomItem(key, forcedIndex = null) {
     let rollText = "";
 
     if (forcedIndex !== null) {
-        let idx = forcedIndex;
-        if (idx < 0) idx = 0;
-        if (idx >= sourceData.length) idx = sourceData.length - 1;
-        item = sourceData[idx];
-        rollText = `Calculé : ${idx}`;
+        let idx = forcedIndex; if (idx < 0) idx = 0; if (idx >= sourceData.length) idx = sourceData.length - 1;
+        item = sourceData[idx]; rollText = `Calculé : ${idx}`;
     } else if (tableInfo.method === "2d6") {
         let d1 = rollD6(), d2 = rollD6(), tot = d1 + d2;
-        item = sourceData[tot - 2];
-        rollText = `2d6 : ${d1}+${d2} = ${tot}`;
+        item = sourceData[tot - 2]; rollText = `2d6 : ${d1}+${d2} = ${tot}`;
     } else {
         let idx = getRandomInt(0, sourceData.length - 1);
-        item = sourceData[idx];
-        rollText = `Tirage : ${idx + 1}`;
+        item = sourceData[idx]; rollText = `Tirage : ${idx + 1}`;
     }
 
     const title = document.getElementById("modal-title");
@@ -291,17 +333,15 @@ function pickRandomItem(key, forcedIndex = null) {
         if (item.levelFormula) {
             const hcl = parseInt(localStorage.getItem("4ad_hcl")) || 1;
             const lvl = resolveFormula(item.levelFormula, hcl);
-            finalText += `<br><br><div style="border:2px solid #e67e22; padding:10px; border-radius:8px; color:#e67e22; font-weight:bold;">🔒 DIFFICULTÉ : ${lvl}</div>`;
+            finalText += `<br><br><div style="border:1px solid #e67e22; padding:8px; border-radius:6px; color:#e67e22;">🔒 DIFFICULTÉ : ${lvl}</div>`;
         }
         textDisplay.innerHTML = finalText;
         addInteractionButtons(item, interactionArea);
     }
-    
     openModal();
 }
 
-// --- AFFICHAGE & RENDU MONSTRE ---
-
+// --- AFFICHAGE MONSTRE ---
 function displayMonster(monsterItem) {
     resetModal(); 
     const title = document.getElementById("modal-title");
@@ -316,7 +356,7 @@ function displayMonster(monsterItem) {
 
     const trackValue = (render.count > 1) ? render.count : render.pv;
     const trackLabel = (render.count > 1) ? "Ennemis restants" : `PV (Max: ${render.pv})`;
-    addMonsterTracker(interactionArea, trackValue, trackLabel);
+    addMonsterTracker(interactionArea, trackValue, trackLabel, monsterItem);
 
     addInteractionButtons(monsterItem, interactionArea);
     openModal();
@@ -324,8 +364,7 @@ function displayMonster(monsterItem) {
 
 function renderMonsterCard(monsterData) {
     const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
-
-    // Calculs
+    
     const finalLevel = calculateMonsterLevel(monsterData, currentHCL);
     const finalPV = resolveFormula(monsterData.life || 1, currentHCL);
     const finalQty = resolveFormula(monsterData.qty || "1", currentHCL);
@@ -338,16 +377,13 @@ function renderMonsterCard(monsterData) {
     const mXP = monsterData.xp || "Standard";
     const mHab = monsterData.habitat || "Inconnu";
     const mDesc = monsterData.desc || "";
-    const mEquip = monsterData.equipment || null; 
-
+    
     let mTr = "Aucun";
     if (monsterData.treasure) {
         const tCount = monsterData.treasure.rolls || 1;
         const tMod = monsterData.treasure.mod ? (monsterData.treasure.mod > 0 ? `+${monsterData.treasure.mod}` : monsterData.treasure.mod) : "";
         const tDisplayMod = tMod ? `[${tMod}]` : "";
         mTr = `${tCount}x ${tDisplayMod}`; 
-    } else if (monsterData.treasureMod !== undefined) {
-        mTr = `Mod: ${monsterData.treasureMod}`;
     }
 
     let cardHTML = `
@@ -369,29 +405,101 @@ function renderMonsterCard(monsterData) {
             <span>✨ XP: <b>${mXP}</b></span>
             <span>🌍 ${mHab}</span>
         </div>
-    `;
-
-    if (mEquip) {
-        cardHTML += `
-        <div style="background:#2c3e50; color:#bdc3c7; padding:5px 10px; font-size:0.85em; border-top:1px solid #444; border-bottom:1px solid #444;">
-            🎒 <b>Équipement :</b> <span style="color:#fff;">${mEquip}</span>
-        </div>`;
-    }
-
-    cardHTML += `
         <div class="monster-desc">${mDesc}</div>
     </div>`;
 
     return { html: cardHTML, count: finalQty, pv: finalPV };
 }
 
-// --- BOUTONS D'ACTION ---
+// --- TRACKER & MORAL ---
+function addMonsterTracker(container, count, description, monsterData = null) {
+    let startValue = count;
+    let label = description; 
+    let maxVal = startValue;
+    let moraleStr = monsterData ? (monsterData.morale || "Neutre") : "Neutre";
+    
+    const wrapper = document.createElement("div");
+    wrapper.className = "tracker-container";
+    wrapper.dataset.max = maxVal;
+    wrapper.dataset.morale = moraleStr;
+    wrapper.dataset.checked = "false"; 
+    
+    wrapper.innerHTML = `
+        <span class="tracker-label">${label}</span>
+        <div class="tracker-controls">
+            <button class="tracker-btn" onclick="updateTracker(this, -1)">-</button>
+            <span class="tracker-value">${startValue}</span>
+            <button class="tracker-btn" onclick="updateTracker(this, 1)">+</button>
+        </div>
+        <div class="morale-result"></div> 
+    `;
+    container.appendChild(wrapper);
+}
 
+window.updateTracker = function(btn, change) {
+    const wrapper = btn.closest(".tracker-container");
+    const display = wrapper.querySelector(".tracker-value");
+    const moraleZone = wrapper.querySelector(".morale-result");
+    
+    let val = parseInt(display.innerText);
+    val += change;
+    if (val < 0) val = 0;
+    
+    display.innerText = val;
+    if (val === 0) {
+        display.classList.add("dead");
+        display.innerHTML = "💀";
+    } else {
+        display.classList.remove("dead");
+    }
+
+    const max = parseInt(wrapper.dataset.max);
+    const hasChecked = wrapper.dataset.checked === "true";
+    const moraleStr = wrapper.dataset.morale;
+
+    if (val > 0 && val <= (max / 2) && !hasChecked) {
+        if (moraleStr === "Sans peur") {
+            wrapper.dataset.checked = "true";
+            return; 
+        }
+
+        let mod = 0;
+        if (moraleStr !== "Neutre") {
+            mod = parseInt(moraleStr) || 0;
+        }
+
+        const roll = rollD6();
+        const total = roll + mod;
+        let isFleeing = total <= 3;
+        const sign = mod > 0 ? "+" : "";
+        const modTxt = mod !== 0 ? `(${sign}${mod})` : "";
+        
+        let htmlResult = "";
+        
+        if (isFleeing) {
+            htmlResult = `
+            <div style="margin-top:10px; padding:8px; background:#e67e22; color:white; border-radius:6px; font-weight:bold; animation:fadeIn 0.5s;">
+                🏃 ECHEC MORAL (${roll}${modTxt}=${total})<br>
+                Les ennemis tentent de fuir !
+            </div>`;
+        } else {
+            htmlResult = `
+            <div style="margin-top:10px; padding:8px; background:#c0392b; color:white; border-radius:6px; font-weight:bold; animation:fadeIn 0.5s;">
+                ⚔️ MORAL REUSSI (${roll}${modTxt}=${total})<br>
+                Ils se battent jusqu'à la mort !
+            </div>`;
+        }
+
+        moraleZone.innerHTML = htmlResult;
+        wrapper.dataset.checked = "true"; 
+    }
+};
+
+// --- BOUTONS D'ACTION ---
 function addInteractionButtons(item, container) {
     const dCheck = `d${currentGlobalDie}`; 
     const ENEMY_TYPES = ["BOSS", "SBIRE", "VERMINE", "ETRANGE", "monster"];
 
-    // 1. COMBAT
     if (ENEMY_TYPES.includes(item.type)) {
         const combatBtn = document.createElement("button");
         combatBtn.className = "combat-btn";
@@ -400,7 +508,6 @@ function addInteractionButtons(item, container) {
         container.appendChild(combatBtn);
     }
 
-    // 2. RÉACTION
     if (item.reaction) {
         const reactBtn = document.createElement("button");
         reactBtn.className = "reaction-btn";
@@ -409,7 +516,6 @@ function addInteractionButtons(item, container) {
         container.appendChild(reactBtn);
     }
 
-    // 3. ACTION SPÉCIALE (Texte/Table classique)
     if (item.specialAction) {
         const spBtn = document.createElement("button");
         spBtn.className = "combat-btn"; 
@@ -419,18 +525,6 @@ function addInteractionButtons(item, container) {
         container.appendChild(spBtn);
     }
 
-    // 4. TEST
-    if (item.testBtn) {
-        const label = item.testBtn.replace("(d6)", `(${dCheck})`);
-        const testBtn = document.createElement("button");
-        testBtn.className = "combat-btn"; 
-        testBtn.style.backgroundColor = "#e67e22";
-        testBtn.innerHTML = label;
-        testBtn.onclick = () => rollTest(container, label);
-        container.appendChild(testBtn);
-    }
-
-    // 5. TRÉSOR
     if (item.treasure) {
         const treasureBtn = document.createElement("button");
         treasureBtn.className = "treasure-btn";
@@ -439,21 +533,12 @@ function addInteractionButtons(item, container) {
         const mod = item.treasure.mod || 0;
         const sign = mod > 0 ? "+" : "";
         const modText = mod === 0 ? "" : ` ${sign}${mod}`;
+        
         treasureBtn.innerHTML = `💰 Trésor (${rolls}x${modText})`;
         treasureBtn.onclick = () => resolveMultipleTreasures(table, rolls, mod);
         container.appendChild(treasureBtn);
     } 
-    else if (item.treasureMod !== null && item.treasureMod !== undefined) {
-        const treasureBtn = document.createElement("button");
-        treasureBtn.className = "treasure-btn";
-        const sign = item.treasureMod > 0 ? "+" : "";
-        const modText = item.treasureMod === 0 ? "Normal" : `${sign}${item.treasureMod}`;
-        treasureBtn.innerHTML = `💰 Trésor (${modText})`;
-        treasureBtn.onclick = () => resolveMultipleTreasures("tresors", 1, item.treasureMod);
-        container.appendChild(treasureBtn);
-    }
 
-    // 6. SUIVANT
     if (item.next) {
         item.next.forEach(nextKey => {
             const nextTable = gameData[nextKey];
@@ -467,56 +552,114 @@ function addInteractionButtons(item, container) {
         });
     }
 
-    // 7. RENFORTS / SBIRES (NOUVEAU !)
     if (item.minions) {
         const minionBtn = document.createElement("button");
         minionBtn.className = "combat-btn";
-        // Style différent pour bien le voir (Rouge foncé)
         minionBtn.style.backgroundColor = "#c0392b"; 
         minionBtn.style.border = "2px solid #e74c3c";
-        
-        // Ex: "⚠️ Voir les Squelettes (1d6)"
         minionBtn.innerHTML = `⚠️ Voir les ${item.minions.label} (${item.minions.qty})`;
-        
-        // Au clic, on appelle la fonction de renforts
         minionBtn.onclick = () => resolveMinions(item.minions);
         container.appendChild(minionBtn);
     }
 }
 
+function resolveMinions(minionData) {
+    const textDisplay = document.getElementById("text-display"); 
+    const interactionArea = document.getElementById("interaction-area");
+    
+    const count = parseAndCalculate(minionData.qty);
+    const poolType = minionData.pool || "SBIRE";
+    const pool = activePools[poolType];
 
-// --- LOGIQUE TRÉSOR (RECURSIVE & INTELLIGENTE) ---
+    if (!pool || pool.length === 0) {
+        alert(`Aucun sbire disponible.`);
+        return;
+    }
+
+    const monster = pool[getRandomInt(0, pool.length - 1)];
+    const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
+    const finalLevel = calculateMonsterLevel(monster, currentHCL);
+    const finalPV = resolveFormula(monster.life || 1, currentHCL);
+    
+    const minionCard = document.createElement("div");
+    minionCard.style.marginTop = "15px";
+    minionCard.style.padding = "10px";
+    minionCard.style.backgroundColor = "#2c0b0b";
+    minionCard.style.border = "2px dashed #c0392b";
+    minionCard.style.borderRadius = "8px";
+    minionCard.style.animation = "fadeIn 0.5s";
+
+    minionCard.innerHTML = `
+        <div style="color:#e74c3c; font-weight:bold; margin-bottom:5px; text-transform:uppercase;">⚠️ RENFORTS : ${count} x ${monster.name}</div>
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; text-align:center; font-size:0.9em; margin-bottom:10px;">
+            <div style="background:#4a1818; padding:3px; border-radius:4px;">Niv <b>${finalLevel}</b></div>
+            <div style="background:#4a1818; padding:3px; border-radius:4px;">PV <b>${finalPV}</b></div>
+            <div style="background:#4a1818; padding:3px; border-radius:4px;">Dmg <b>${monster.damage||1}</b></div>
+        </div>
+        <div style="font-style:italic; font-size:0.85em; color:#aaa; margin-bottom:10px;">${monster.desc || ""}</div>
+    `;
+
+    const trackerDiv = document.createElement("div");
+    addMonsterTracker(trackerDiv, count, `Ennemis (${monster.name})`, monster);
+    minionCard.appendChild(trackerDiv);
+
+    textDisplay.appendChild(minionCard);
+
+    const btns = interactionArea.getElementsByTagName("button");
+    for(let btn of btns) {
+        if(btn.innerHTML.includes(minionData.label)) {
+            btn.disabled = true;
+            btn.innerHTML = `✅ ${minionData.label} (En jeu)`;
+            btn.style.opacity = "0.5";
+        }
+    }
+}
+
+// --- LOGIQUE TRÉSOR AVEC PROVENANCE ---
+function getDeepestItem(item, breadcrumbs = []) {
+    if (!item || typeof item === 'string') return { item: item, path: breadcrumbs };
+
+    if (item.next && item.next.length > 0) {
+        let currentName = item.name || "Autre";
+        let newPath = [...breadcrumbs, currentName];
+
+        const nextKey = item.next[0];
+        const nextTable = gameData[nextKey];
+        if (nextTable) {
+            let chosenSourceKey = "base";
+            if (nextTable.sources) {
+                 const possibleSources = Object.keys(nextTable.sources).filter(k => k === "base" || activeExtensions.includes(k));
+                 if(possibleSources.length > 0) chosenSourceKey = possibleSources[getRandomInt(0, possibleSources.length - 1)];
+            }
+            const sourceItems = nextTable.sources[chosenSourceKey] ? nextTable.sources[chosenSourceKey].items : [];
+            if (sourceItems.length > 0) {
+                return getDeepestItem(sourceItems[getRandomInt(0, sourceItems.length - 1)], newPath); 
+            }
+        }
+    }
+    return { item: item, path: breadcrumbs };
+}
 
 function resolveMultipleTreasures(tableKey, count, modifier) {
     const tableInfo = gameData[tableKey];
-    if (!tableInfo) { alert(`Erreur: Table '${tableKey}' introuvable.`); return; }
+    if (!tableInfo) { alert(`Table '${tableKey}' introuvable.`); return; }
 
     resetModal(); 
-    
     const title = document.getElementById("modal-title");
     const textDisplay = document.getElementById("text-display");
     const interactionArea = document.getElementById("interaction-area");
 
     title.innerText = `💰 BUTIN (${count} jets)`;
     
-    // Choix Source
     let chosenSourceKey = "base";
     if (tableInfo.sources) {
-        const possibleSources = activeExtensions.filter(extId => tableInfo.sources[extId]);
+        const possibleSources = Object.keys(tableInfo.sources).filter(k => k === "base" || activeExtensions.includes(k));
         if (possibleSources.length > 0) {
             chosenSourceKey = possibleSources[getRandomInt(0, possibleSources.length - 1)];
-        } else if (!tableInfo.sources['base']) {
-            chosenSourceKey = Object.keys(tableInfo.sources)[0];
         }
     }
 
     let itemsList = tableInfo.sources[chosenSourceKey] ? tableInfo.sources[chosenSourceKey].items : [];
-    
-    if (!itemsList || itemsList.length === 0) {
-        textDisplay.innerHTML = "Table vide.";
-        openModal(); return;
-    }
-
     let finalHTML = `<div style="text-align:left;">`;
     let totalGold = 0;
 
@@ -526,10 +669,16 @@ function resolveMultipleTreasures(tableKey, count, modifier) {
         if (total < 1) total = 1; 
         if (total > itemsList.length) total = itemsList.length;
 
-        // Récursivité
         let initialItem = itemsList[total - 1];
-        let finalItem = getDeepestItem(initialItem);
+        let resultObj = getDeepestItem(initialItem);
+        let finalItem = resultObj.item;
+        let path = resultObj.path;
         
+        let sourceText = "";
+        if (path.length > 0) {
+            sourceText = `<div style="font-size:0.8em; color:#aaa; font-style:italic;">(Source : ${path.join(" ➔ ")})</div>`;
+        }
+
         let goldValue = 0;
         let itemText = "";
 
@@ -544,7 +693,7 @@ function resolveMultipleTreasures(tableKey, count, modifier) {
         } else {
              const name = finalItem.name || "Objet";
              const desc = finalItem.text || ""; 
-             itemText = `<b>${name}</b> <br><span style="font-size:0.9em; color:#aaa;">${desc}</span>`;
+             itemText = `<b>${name}</b> <br><span style="font-size:0.9em; color:#bbb;">${desc}</span>`;
         }
 
         const sign = modifier > 0 ? "+" : "";
@@ -552,10 +701,11 @@ function resolveMultipleTreasures(tableKey, count, modifier) {
         
         finalHTML += `
         <div style="background:#2c3e50; padding:10px; margin-bottom:8px; border-radius:6px; border-left:4px solid #f1c40f;">
-            <div style="color:#7f8c8d; font-size:0.75em; margin-bottom:2px;">
-                Jet n°${i+1} : 🎲 ${roll}${modDisplay}
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="color:#7f8c8d; font-size:0.75em;">Jet n°${i+1} : 🎲 ${roll}${modDisplay}</div>
+                ${sourceText}
             </div>
-            <div style="color:#ecf0f1; font-size:1.1em;">
+            <div style="color:#ecf0f1; font-size:1.1em; margin-top:4px;">
                 ${itemText}
             </div>
         </div>`;
@@ -572,76 +722,15 @@ function resolveMultipleTreasures(tableKey, count, modifier) {
 
     textDisplay.innerHTML = finalHTML;
     
-    interactionArea.innerHTML = ""; 
     const closeBtn = document.createElement("button");
     closeBtn.className = "next-action-btn"; 
     closeBtn.innerHTML = "✅ Tout ramasser";
     closeBtn.onclick = () => document.getElementById("result-modal").style.display = "none";
     interactionArea.appendChild(closeBtn);
-
     openModal();
 }
 
-function getDeepestItem(item) {
-    if (!item || typeof item === 'string' || !item.next) return item;
-
-    if (item.next && item.next.length > 0) {
-        const nextKey = item.next[0];
-        const nextTable = gameData[nextKey];
-
-        if (nextTable) {
-            let chosenSourceKey = "base";
-            if (nextTable.sources) {
-                const possibleSources = activeExtensions.filter(extId => nextTable.sources[extId]);
-                if (possibleSources.length > 0) {
-                    chosenSourceKey = possibleSources[getRandomInt(0, possibleSources.length - 1)];
-                } else if (!nextTable.sources['base']) {
-                    chosenSourceKey = Object.keys(nextTable.sources)[0];
-                }
-            }
-            const sourceItems = nextTable.sources[chosenSourceKey] ? nextTable.sources[chosenSourceKey].items : [];
-            if (sourceItems.length > 0) {
-                const randomIndex = getRandomInt(0, sourceItems.length - 1);
-                return getDeepestItem(sourceItems[randomIndex]); 
-            }
-        }
-    }
-    return item;
-}
-
-// --- UTILITAIRES & MATHS ---
-
-function addMonsterTracker(container, count, description) {
-    let startValue = count;
-    let label = description; 
-    
-    const wrapper = document.createElement("div");
-    wrapper.className = "tracker-container";
-    wrapper.innerHTML = `
-        <span class="tracker-label">${label}</span>
-        <div class="tracker-controls">
-            <button class="tracker-btn" onclick="updateTracker(this, -1)">-</button>
-            <span class="tracker-value">${startValue}</span>
-            <button class="tracker-btn" onclick="updateTracker(this, 1)">+</button>
-        </div>
-    `;
-    container.appendChild(wrapper);
-}
-
-window.updateTracker = function(btn, change) {
-    const display = btn.parentElement.querySelector(".tracker-value");
-    let val = parseInt(display.innerText);
-    val += change;
-    if (val < 0) val = 0;
-    display.innerText = val;
-    if (val === 0) {
-        display.classList.add("dead");
-        display.innerHTML = "💀";
-    } else {
-        display.classList.remove("dead");
-    }
-};
-
+// --- UTILITAIRES ---
 function resolveFormula(formula, currentHCL) {
     if (typeof formula === 'number') return formula; 
     if (!formula) return 0;
@@ -657,7 +746,7 @@ function resolveFormula(formula, currentHCL) {
 
 function parseAndCalculate(text) {
     if (!text) return 0;
-    const evaluatedText = text.replace(/(\d*)[dD](\d+)/gi, (match, p1, p2) => {
+    const evaluatedText = text.toString().replace(/(\d*)[dD](\d+)/gi, (match, p1, p2) => {
         const number = p1 === "" ? 1 : parseInt(p1);
         const faces = parseInt(p2);
         let total = 0;
@@ -673,10 +762,57 @@ function rollCombat(container) {
     displayUniqueResult(container, "combat-unique-res", color, "#2c0b0b", `⚔️ Attaque (d${currentGlobalDie})`, roll);
 }
 
-function rollTest(container, label) {
-    const roll = getRandomInt(1, currentGlobalDie);
-    const cleanLabel = label || `🎲 Test (d${currentGlobalDie})`;
-    displayUniqueResult(container, "test-unique-res", "#e67e22", "#2d1b0e", cleanLabel, roll);
+function showReaction(item) {
+    if (!item || !item.reaction) return;
+    const old = document.getElementById("reaction-res");
+    if (old) old.remove();
+    const roll = rollD6();
+    let index = roll - 1;
+    if (index >= item.reaction.length) index = item.reaction.length - 1;
+    
+    const div = document.createElement("div");
+    div.id = "reaction-res";
+    div.className = "dynamic-result-text";
+    div.style.borderColor = "#4a90e2";
+    div.style.color = "#4a90e2";
+    div.innerHTML = `<strong>Réaction (${roll}) :</strong> ${item.reaction[index]}`;
+    document.getElementById("interaction-area").appendChild(div);
+}
+
+function displayTreasureResult(item, target) {
+    let content = "";
+    if (item.formula) {
+        const value = parseAndCalculate(item.formula);
+        content = `<strong>${item.name}</strong><br><br><span style="font-size:1.8em; color:#f1c40f">${value} po</span>`;
+    } else {
+        content = `<strong>${item.name}</strong>`;
+    }
+    target.innerHTML = content;
+}
+
+function showSpecialResult(tableKey) {
+    const table = gameData[tableKey];
+    if (!table) return;
+    const items = table.sources['base'].items; 
+    let result, roll = 0;
+
+    if (items.length === 1) {
+        result = items[0]; 
+    } else {
+        roll = rollD6();
+        let index = roll - 1;
+        if (index >= items.length) index = items.length - 1;
+        result = items[index];
+    }
+    
+    const ENEMY_TYPES = ["BOSS", "SBIRE", "VERMINE", "ETRANGE", "monster"];
+    let displayHTML = ENEMY_TYPES.includes(result.type) ? `<strong>${parseAndCalculate(result.qty)} ${result.name}</strong><br>${result.desc}` : (result.text || result);
+
+    const div = document.createElement("div");
+    div.className = "dynamic-result-text";
+    div.style.borderColor = "#8e44ad"; 
+    div.innerHTML = `<strong>Résultat ${roll > 0 ? '('+roll+')' : ''} :</strong> ${displayHTML}`;
+    document.getElementById("interaction-area").appendChild(div);
 }
 
 function displayUniqueResult(container, id, color, bg, label, value) {
@@ -696,72 +832,6 @@ function displayUniqueResult(container, id, color, bg, label, value) {
     box.style.animation = 'fadeIn 0.2s';
 }
 
-function showReaction(item) {
-    if (!item || !item.reaction) return;
-    const old = document.getElementById("reaction-res");
-    if (old) old.remove();
-    const roll = rollD6();
-    let index = roll - 1;
-    if (index >= item.reaction.length) index = item.reaction.length - 1;
-    
-    const resultText = item.reaction[index];
-    const div = document.createElement("div");
-    div.id = "reaction-res";
-    div.className = "dynamic-result-text";
-    div.style.borderColor = "#4a90e2";
-    div.style.color = "#4a90e2";
-    div.innerHTML = `<strong>Réaction (${roll}) :</strong> ${resultText}`;
-    document.getElementById("interaction-area").appendChild(div);
-}
-
-function displayTreasureResult(item, target) {
-    let content = "";
-    if (item.formula) {
-        const value = parseAndCalculate(item.formula);
-        content = `<strong>${item.name}</strong><br><br><span style="font-size:1.8em; color:#f1c40f">${value} po</span>`;
-    } else {
-        content = `<strong>${item.name}</strong>`;
-    }
-    target.innerHTML = content;
-}
-
-function showSpecialResult(tableKey) {
-    const old = document.getElementById("special-res");
-    if (old) old.remove();
-    const table = gameData[tableKey];
-    if (!table) return;
-    
-    const items = table.sources['base'].items; 
-    let result;
-    let roll = 0;
-
-    if (items.length === 1) {
-        result = items[0]; 
-    } else {
-        roll = rollD6();
-        let index = roll - 1;
-        if (index >= items.length) index = items.length - 1;
-        result = items[index];
-    }
-
-    let displayHTML = "";
-    const ENEMY_TYPES = ["BOSS", "SBIRE", "VERMINE", "ETRANGE", "monster"];
-
-    if (ENEMY_TYPES.includes(result.type)) {
-        let count = parseAndCalculate(result.qty);
-        displayHTML = `<strong>${count} ${result.name}</strong><br>${result.desc}`;
-    } else {
-        displayHTML = result.text || result;
-    }
-
-    const div = document.createElement("div");
-    div.id = "special-res";
-    div.className = "dynamic-result-text";
-    div.style.borderColor = ENEMY_TYPES.includes(result.type) ? "#c0392b" : "#8e44ad"; 
-    div.innerHTML = `<strong>Résultat ${roll > 0 ? '('+roll+')' : ''} :</strong> ${displayHTML}`;
-    document.getElementById("interaction-area").appendChild(div);
-}
-
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function rollD6() { return getRandomInt(1, 6); }
 function resetModal() { 
@@ -773,7 +843,6 @@ function resetModal() {
     currentMonster = null;
 }
 function openModal() { document.getElementById("result-modal").style.display = "block"; }
-function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
 function showQuickDice(faces) {
     resetModal();
@@ -815,172 +884,14 @@ function drawVisualEntrance() {
     const title = document.getElementById("modal-title");
     const modalImage = document.getElementById("modal-image");
     const interactionArea = document.getElementById("interaction-area");
-
     const imageNumber = getRandomInt(1, 6);
     title.innerText = "Entrée";
     modalImage.src = `images/${imageNumber}.png`; 
     modalImage.style.display = "block";
-
     const nextBtn = document.createElement("button");
     nextBtn.className = "next-action-btn";
     nextBtn.innerHTML = `➡️ Explorer`;
     nextBtn.onclick = () => drawNewTile(); 
     interactionArea.appendChild(nextBtn);
     openModal();
-}
-
-// --- FONCTION : GESTION DES RENFORTS (MINIONS) ---
-// --- FONCTION : GESTION DES RENFORTS (MINIONS) ---
-function resolveMinions(minionData) {
-    // ON CHANGE LA CIBLE : On va écrire dans la zone de texte (au-dessus des boutons)
-    const textDisplay = document.getElementById("text-display"); 
-    const interactionArea = document.getElementById("interaction-area");
-    
-    // 1. Calcul de la quantité
-    const count = parseAndCalculate(minionData.qty);
-    
-    // 2. Pioche dans la Pool Dynamique
-    const poolType = minionData.pool || "SBIRE";
-    const pool = activePools[poolType];
-
-    if (!pool || pool.length === 0) {
-        alert(`Aucun monstre de type '${poolType}' disponible pour ce niveau.`);
-        return;
-    }
-
-    // On tire un monstre au hasard dans la pool
-    const monster = pool[getRandomInt(0, pool.length - 1)];
-    
-    // 3. Calculs des stats du sbire
-    const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
-    const finalLevel = calculateMonsterLevel(monster, currentHCL);
-    const finalPV = resolveFormula(monster.life || 1, currentHCL);
-    
-    // 4. Création de l'affichage (Petite carte style "Alerte")
-    const minionCard = document.createElement("div");
-    minionCard.style.marginTop = "15px";
-    minionCard.style.padding = "10px";
-    minionCard.style.backgroundColor = "#2c0b0b"; // Fond rougeâtre
-    minionCard.style.border = "2px dashed #c0392b";
-    minionCard.style.borderRadius = "8px";
-    
-    // Animation pour attirer l'œil sans être agressif
-    minionCard.style.animation = "fadeIn 0.5s";
-
-    minionCard.innerHTML = `
-        <div style="color:#e74c3c; font-weight:bold; margin-bottom:5px; text-transform:uppercase;">⚠️ RENFORTS : ${count} x ${monster.name}</div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; text-align:center; font-size:0.9em; margin-bottom:10px;">
-            <div style="background:#4a1818; padding:3px; border-radius:4px;">Niv <b>${finalLevel}</b></div>
-            <div style="background:#4a1818; padding:3px; border-radius:4px;">PV <b>${finalPV}</b></div>
-            <div style="background:#4a1818; padding:3px; border-radius:4px;">Dmg <b>${monster.damage||1}</b></div>
-        </div>
-        <div style="font-style:italic; font-size:0.85em; color:#aaa; margin-bottom:10px;">${monster.desc || ""}</div>
-    `;
-
-    // 5. Ajout du tracker (Compteur de vie) DANS la carte des sbires
-    const trackerDiv = document.createElement("div");
-    // On réutilise ta fonction addMonsterTracker existante
-    addMonsterTracker(trackerDiv, count, `Ennemis (${monster.name})`);
-    minionCard.appendChild(trackerDiv);
-
-    // 6. INSERTION AU BON ENDROIT
-    // On ajoute la carte à la suite du Boss (dans textDisplay), donc AU-DESSUS des boutons
-    textDisplay.appendChild(minionCard);
-
-    // 7. Désactivation du bouton pour éviter le double-clic
-    const btns = interactionArea.getElementsByTagName("button");
-    for(let btn of btns) {
-        // On cherche le bouton qui contient le label (ex: "Squelettes")
-        if(btn.innerHTML.includes(minionData.label)) {
-            btn.disabled = true;
-            btn.innerHTML = `✅ ${minionData.label} (En jeu)`;
-            btn.style.opacity = "0.5";
-            btn.style.borderColor = "#555";
-        }
-    }
-}
-
-// --- GESTION DES ONGLETS & BESTIAIRE ---
-
-function switchTab(tabName) {
-    // 1. Cacher tous les contenus
-    document.getElementById("tab-generator").style.display = "none";
-    document.getElementById("tab-bestiary").style.display = "none";
-    
-    // 2. Désactiver tous les boutons
-    const buttons = document.querySelectorAll(".tab-btn");
-    buttons.forEach(btn => btn.classList.remove("active"));
-    
-    // 3. Activer le bon
-    if (tabName === 'generator') {
-        document.getElementById("tab-generator").style.display = "block";
-        buttons[0].classList.add("active");
-    } else {
-        document.getElementById("tab-bestiary").style.display = "block";
-        buttons[1].classList.add("active");
-        renderBestiary(); // On rafraîchit la liste quand on clique
-    }
-}
-
-function renderBestiary() {
-    const container = document.getElementById("bestiary-list");
-    container.innerHTML = "";
-    
-    const currentHCL = parseInt(localStorage.getItem("4ad_hcl")) || 1;
-
-    // Ordre d'affichage souhaité
-    const typesOrder = ["BOSS", "SBIRE", "VERMINE", "ETRANGE"];
-    
-    // Dictionnaire pour les titres jolis
-    const titles = {
-        "BOSS": "💀 Boss",
-        "SBIRE": "⚔️ Sbires",
-        "VERMINE": "🐀 Nuisibles / Vermines",
-        "ETRANGE": "👁️ Monstres Étranges"
-    };
-
-    let foundAny = false;
-
-    typesOrder.forEach(type => {
-        const pool = activePools[type];
-        
-        if (pool && pool.length > 0) {
-            foundAny = true;
-            
-            // Création de la section (Titre)
-            const section = document.createElement("div");
-            section.className = "bestiary-section";
-            
-            const title = document.createElement("h3");
-            title.className = "bestiary-title";
-            title.innerText = `${titles[type]} (${pool.length})`;
-            section.appendChild(title);
-            
-            // Création de la liste
-            pool.forEach(monster => {
-                const itemDiv = document.createElement("div");
-                itemDiv.className = "bestiary-item";
-                
-                // Calcul du niveau pour l'affichage (ex: Niv 5)
-                const lvl = calculateMonsterLevel(monster, currentHCL);
-                
-                // Contenu de la ligne
-                itemDiv.innerHTML = `
-                    <span>${monster.name}</span>
-                    <span class="mon-lvl-badge">Niv ${lvl}</span>
-                `;
-                
-                // Au clic, on ouvre la fiche comme si on l'avait tiré au dé
-                itemDiv.onclick = () => displayMonster(monster);
-                
-                section.appendChild(itemDiv);
-            });
-            
-            container.appendChild(section);
-        }
-    });
-
-    if (!foundAny) {
-        container.innerHTML = "<div style='text-align:center; color:#aaa; padding:20px;'>Aucun monstre trouvé pour ce niveau et ces réglages.</div>";
-    }
 }
